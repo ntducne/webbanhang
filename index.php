@@ -27,7 +27,7 @@
 <body>
 
 <!-- Start Header/Navigation -->
-<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
+<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar" style="background-color: #3b5d50 !important;">
 
     <div class="container">
         <a class="navbar-brand" href="/">Furni<span>.</span></a>
@@ -49,7 +49,7 @@
             </ul>
 
             <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                <li><a class="nav-link" href="#"><img src="images/user.svg"></a></li>
+                <li><a class="nav-link" href="/auth/login.php"><img src="images/user.svg"></a></li>
                 <li><a class="nav-link" href="cart.php"><img src="images/cart.svg"></a></li>
             </ul>
         </div>
@@ -66,7 +66,7 @@
                 <div class="intro-excerpt">
                     <h1>Modern Interior <span clsas="d-block">Design Studio</span></h1>
                     <p class="mb-4">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique.</p>
-                    <p><a href="" class="btn btn-secondary me-2">Shop Now</a><a href="#" class="btn btn-white-outline">Explore</a></p>
+                    <p><a href="shop.php" class="btn btn-secondary me-2">Shop Now</a><a href="#" class="btn btn-white-outline">Explore</a></p>
                 </div>
             </div>
             <div class="col-lg-7">
