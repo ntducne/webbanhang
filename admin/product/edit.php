@@ -28,12 +28,14 @@ $image = $user['image'];
         $price = $_POST['price'];
         $category_id = $_POST['category_id'];
         $description = $_POST['description'];
-        $image = $_FILES['image']['name'];
+        $image = time().$_FILES['image']['name'];
         if($_FILES['image']['name'] == ''){
             $image = $productDetail->image;
         } else {
+            // delete image
+            unlink('../../uploads/'.$productDetail->image);
             $image = $_FILES['image']['name'];
-            move_uploaded_file($_FILES["image"]["tmp_name"], "../../uploads/".$_FILES["image"]["name"]);
+            move_uploaded_file($_FILES["image"]["tmp_name"], "../../uploads/".$image);
         }
         $status = $_POST['status'];
         $product->update($id, $name, $description, $price, $image, $category_id, $status);

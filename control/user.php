@@ -1,22 +1,21 @@
 <?php
 
-include '../config/connect.php';
-
 class User {
-    public function create($name, $email, $password, $role) {
+    public function create($name, $username, $password, $email, $phone, $image, $role, $status) {
         global $conn;
-        $insert="insert into users(name, email, password, role) values ('$name', '$email', '$password', '$role')";
-        return mysqli_query ($conn,$insert);
+        $insert = "INSERT INTO users (name, username, password, email, phone, image, role, status) VALUES ('$name', '$username', '$password', '$email', '$phone', '$image', '$role', '$status')";
+        return mysqli_query($conn, $insert);
     }
     public function read() {
         global $conn;
-        $select="select* from users";
-        return mysqli_query ($conn,$select);
+        $select = "SELECT * FROM users WHERE id != '1'";
+        return mysqli_query($conn, $select);
     }
-    public function update($id, $name, $email, $password, $role) {
+
+    public function update($id, $name, $username, $password, $email, $phone, $image, $role, $status) {
         global $conn;
-        $update="update users set name='$name', email='$email', password='$password', role='$role' where id='$id'";
-        return mysqli_query ($conn,$update);
+        $update = "UPDATE users SET name='$name', username='$username', password='$password', email='$email', phone='$phone', image='$image', role='$role', status='$status' WHERE id='$id'";
+        return mysqli_query($conn, $update);
     }
     public function delete($id) {
         global $conn;

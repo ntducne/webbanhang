@@ -26,8 +26,9 @@ class Session {
         if (!self::get("authUser")) {
             header("Location:/admin/login.php");
         }
-        elseif(self::get('role') != 0){
-            header("Location:/admin/");
+        elseif(self::get('authUser')['role'] == 2){
+            self::destroy();
+            header("Location:/");
         }
     }
     public static function destroy(){

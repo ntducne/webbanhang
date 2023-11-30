@@ -110,7 +110,7 @@ if (isset($_POST['deleteProduct'])) {
                     <?php foreach ($products as $product): ?>
                         <tr>
                             <td><?php echo $product['id'] ?></td>
-                            <td><img width="50" height="50" src="../../uploads/<?php echo $product['image'] ?>" width="100px" height="100px"/>
+                            <td><img  src="../../uploads/<?php echo $product['image'] ?>" width="100px" height="100px"/>
                             </td>
                             <td><?php echo $product['name'] ?></td>
                             <td><?php echo $product['price'] ?></td>

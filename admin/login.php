@@ -13,6 +13,7 @@
                 'image' => $login['image'],
                 'name' => $login['name'],
                 'username' => $login['username'],
+                'role' => $login['role'],
             ]);
             header('location: index.php');
         }
