@@ -1,11 +1,9 @@
 <?php
 
-include '../config/connect.php';
-
 class Auth {
     public function login($username, $password) {
         global $conn;
-        $select="select* from user where username='$username' and password='$password'";
+        $select="select* from users where username='$username' and password='$password'";
         return mysqli_query ($conn,$select);
     }
     public function register($username, $password, $email, $fullname, $address, $phone) {
@@ -15,17 +13,17 @@ class Auth {
     }
     public function checkUsername($username) {
         global $conn;
-        $select="select* from user where username='$username'";
+        $select="select* from users where username='$username'";
         return mysqli_query ($conn,$select);
     }
     public function forgotPassword($email) {
         global $conn;
-        $select="select* from user where email='$email'";
+        $select="select* from users where email='$email'";
         return mysqli_query ($conn,$select);
     }
     public function changePassword($username, $password) {
         global $conn;
-        $update="update user set password='$password' where username='$username'";
+        $update="update users set password='$password' where username='$username'";
         return mysqli_query ($conn,$update);
     }
 }

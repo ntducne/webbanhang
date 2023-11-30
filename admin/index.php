@@ -1,3 +1,12 @@
+<?php
+    include "../config/session.php";
+    Session::checkSession();
+    $user = Session::get('authUser');
+    $username = $user['username'];
+    $name = $user['name'];
+    $image = $user['image'];
+?>
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -31,9 +40,9 @@
 
         <div class="header-right">
 
-            <a href="message-task.html" class="btn btn-info" title="New Message"><b>30 </b><i class="fa fa-envelope-o fa-2x"></i></a>
-            <a href="message-task.html" class="btn btn-primary" title="New Task"><b>40 </b><i class="fa fa-bars fa-2x"></i></a>
-            <a href="login.html" class="btn btn-danger" title="Logout"><i class="fa fa-exclamation-circle fa-2x"></i></a>
+<!--            <a href="message-task.html" class="btn btn-info" title="New Message"><b>30 </b><i class="fa fa-envelope-o fa-2x"></i></a>-->
+<!--            <a href="message-task.html" class="btn btn-primary" title="New Task"><b>40 </b><i class="fa fa-bars fa-2x"></i></a>-->
+            <a href="/admin/logout.php" class="btn btn-danger" title="Logout"><i class="fa fa-exclamation-circle fa-2x"></i></a>
 
         </div>
     </nav>
@@ -43,13 +52,8 @@
             <ul class="nav" id="main-menu">
                 <li>
                     <div class="user-img-div">
-                        <img src="assets/img/user.png" class="img-thumbnail" />
-
-                        <div class="inner-text">
-                            Jhon Deo Alex
-                            <br />
-                            <small>Last Login : 2 Weeks Ago </small>
-                        </div>
+                        <img src="<?php echo $image ?>" class="img-thumbnail" />
+                        <div class="inner-text"><?php echo $name ?><br /></div>
                     </div>
                 </li>
                 <li><a class="active-menu" href="/admin/">Dashboard</a></li>

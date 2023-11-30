@@ -1,31 +1,41 @@
 <?php
 
-include '../config/connect.php';
+//include '../config/connect.php';
 
-class Category {
-    public function create($name, $description) {
+class Category
+{
+    public function create($name)
+    {
         global $conn;
-        $insert="insert into categories(name, description) values ('$name', '$description')";
-        return mysqli_query ($conn,$insert);
+        $insert = "insert into categories(name) values ('$name')";
+        return mysqli_query($conn, $insert);
     }
-    public function read() {
+
+    public function read()
+    {
         global $conn;
-        $select="select* from categories";
-        return mysqli_query ($conn,$select);
+        $select = "select* from categories";
+        return mysqli_query($conn, $select);
     }
-    public function update($id, $name, $description) {
+
+    public function update($id, $name)
+    {
         global $conn;
-        $update="update categories set name='$name', description='$description' where id='$id'";
-        return mysqli_query ($conn,$update);
+        $update = "UPDATE categories SET name='$name' WHERE id='$id'";
+        return mysqli_query($conn, $update);
     }
-    public function delete($id) {
+
+    public function delete($id)
+    {
         global $conn;
-        $delete="delete from categories where id='$id'";
-        return mysqli_query ($conn,$delete);
+        $delete = "delete from categories where id='$id'";
+        return mysqli_query($conn, $delete);
     }
-    public function readById($id) {
+
+    public function readById($id)
+    {
         global $conn;
-        $select="select* from categories where id='$id'";
-        return mysqli_query ($conn,$select);
+        $select = "select* from categories where id='$id'";
+        return mysqli_query($conn, $select);
     }
 }

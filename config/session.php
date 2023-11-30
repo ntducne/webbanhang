@@ -13,18 +13,26 @@ class Session {
             return false;
         }
     }
+
+    public static function checkLogged(){
+        self::init();
+        if (self::get("authUser")) {
+            header("Location:/admin/");
+        }
+    }
+
     public static function checkSession(){
         self::init();
         if (!self::get("authUser")) {
-            header("Location:login.php");
+            header("Location:/admin/login.php");
         }
-        elseif(self::get('role') != 1){
-            header("Location:index.php");
+        elseif(self::get('role') != 0){
+            header("Location:/admin/");
         }
     }
     public static function destroy(){
         session_destroy();
-        header("Location:login.php");
+        header("Location: /admin/login.php");
     }
     public static function unsetSession($key){
         unset($_SESSION[$key]);

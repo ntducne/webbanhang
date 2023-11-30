@@ -1,11 +1,9 @@
 <?php
 
-include '../config/connect.php';
-
 class Product {
-    public function create($name, $description, $price, $image, $category_id) {
+    public function create($name, $description, $price, $image, $category_id, $status) {
         global $conn;
-        $insert="insert into products(name, description, price, image, category_id) values ('$name', '$description', '$price', '$image', '$category_id')";
+        $insert="insert into products(name, description, price, image, category_id, status) values ('$name', '$description', '$price', '$image', '$category_id', '$status')";
         return mysqli_query ($conn,$insert);
     }
 
@@ -20,9 +18,9 @@ class Product {
         $select="select* from products";
         return mysqli_query ($conn,$select);
     }
-    public function update($id, $name, $description, $price, $image, $category_id) {
+    public function update($id, $name, $description, $price, $image, $category_id, $status) {
         global $conn;
-        $update="update products set name='$name', description='$description', price='$price', image='$image', category_id='$category_id' where id='$id'";
+        $update="update products set name='$name', description='$description', price='$price', image='$image', category_id='$category_id', status='$status' where id='$id'";
         return mysqli_query ($conn,$update);
     }
     public function delete($id) {

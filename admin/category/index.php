@@ -1,3 +1,22 @@
+<?php
+    include "../../config/session.php";
+    Session::checkSession();
+$user = Session::get('authUser');
+$username = $user['username'];
+$name = $user['name'];
+$image = $user['image'];
+    include '../../config/connect.php';
+    include '../../control/category.php';
+    $category = new Category();
+    $categories = $category->read();
+    if(isset($_POST['deleteCategory'])){
+        $id = $_POST['id'];
+        $category->delete($id);
+        header('Location: ./index.php');
+    }
+?>
+
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -31,9 +50,8 @@
 
         <div class="header-right">
 
-            <a href="message-task.html" class="btn btn-info" title="New Message"><b>30 </b><i class="fa fa-envelope-o fa-2x"></i></a>
-            <a href="message-task.html" class="btn btn-primary" title="New Task"><b>40 </b><i class="fa fa-bars fa-2x"></i></a>
-            <a href="login.html" class="btn btn-danger" title="Logout"><i class="fa fa-exclamation-circle fa-2x"></i></a>
+            <a href="/admin/logout.php" class="btn btn-danger" title="Logout"><i class="fa fa-exclamation-circle fa-2x"></i></a>
+
 
 
         </div>
@@ -44,13 +62,8 @@
             <ul class="nav" id="main-menu">
                 <li>
                     <div class="user-img-div">
-                        <img src="../assets/img/user.png" class="img-thumbnail" />
-
-                        <div class="inner-text">
-                            Jhon Deo Alex
-                            <br />
-                            <small>Last Login : 2 Weeks Ago </small>
-                        </div>
+                        <img src="<?php echo $image ?>" class="img-thumbnail" />
+                        <div class="inner-text"><?php echo $name ?><br /></div>
                     </div>
 
                 </li>
@@ -72,38 +85,32 @@
             <div class="row">
                 <div class="col-md-12">
                     <h1 class="page-head-line">Category</h1>
-                    <h1 class="page-subhead-line">This is dummy text , you can replace it with your original text. </h1>
+                    <h1 class="page-subhead-line"><a href="./create.php" class="btn btn-success">Create</a></h1>
                 </div>
             </div>
             <div class="table-responsive">
                 <table class="table">
                     <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Username</th>
-                    </tr>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Action</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Larry</td>
-                        <td>the Bird</td>
-                        <td>@twitter</td>
-                    </tr>
+                        <?php foreach ($categories as $category): ?>
+                            <tr>
+                                <td><?php echo $category['id'] ?></td>
+                                <td><?php echo $category['name'] ?></td>
+                                <td style="display: flex; align-items: center">
+                                    <a href="./edit.php?id=<?php echo $category['id'] ?>" class="btn btn-warning">Edit</a>
+                                    <form method="post">
+                                        <input type="hidden" name="id" value="<?php echo $category['id'] ?>">&nbsp;
+                                        <button onclick="return confirm('Do you want delete ?')" type="submit" name="deleteCategory" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
