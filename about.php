@@ -1,3 +1,8 @@
+<?php
+    include 'config/session.php';
+    Session::init();
+?>
+
 <!-- /*
 * Bootstrap 5
 * Template Name: Furni
@@ -21,7 +26,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="css/tiny-slider.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
-    <title>Furni Free Bootstrap 5 Template for Furniture and Interior Design Websites by Untree.co </title>
+    <title>CQ Store</title>
 </head>
 
 <body>
@@ -49,8 +54,35 @@
             </ul>
 
             <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                <li><a class="nav-link" href="/auth/login.php"><img src="images/user.svg"></a></li>
-                <li><a class="nav-link" href="cart.php"><img src="images/cart.svg"></a></li>
+                <li>
+                    <a class="nav-link position-relative" href="/cart.php">
+                    <img src="images/cart.svg">
+                    <span class="position-absolute mt-2 top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        <?php
+                            if(isset($_SESSION['cart'])){
+                                echo count($_SESSION['cart']);
+                            }
+                            else {
+                                echo 0;
+                            }
+                        ?>
+                        <span class="visually-hidden">unread messages</span>
+                      </span>
+                    </a>
+                </li>
+                <?php
+                    if(isset($_SESSION['authUser'])){
+                        echo '
+                            <li><a class="nav-link" href="/profile.php"><img src="images/user.svg"></a></li>
+                        '; 
+                    }
+                    else {
+                        echo '
+                            <li><a class="nav-link" href="/auth/login.php"><img src="images/user.svg"></a></li>
+                        ';
+                    }
+                ?>
+
             </ul>
         </div>
     </div>

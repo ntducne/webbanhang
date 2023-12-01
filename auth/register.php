@@ -1,3 +1,24 @@
+<?php
+    include "../config/connect.php";
+    include "../config/session.php";
+    include "../control/auth.php";
+    Session::checkLoggedClient();
+    if(isset($_POST['register'])){
+        $name = $_POST['name'];
+        $username = $_POST['username'];
+        $email = $_POST['email'];
+        $phone = $_POST['phone'];
+        $password = md5($_POST['password']);
+        $auth = new Auth();
+        $register = $auth->register($name, $username, $email, $phone, $password);
+        if($register){
+            header("Location: /auth/login.php");
+        }else{
+            echo "Register failed";
+        }
+    }
+?>
+
 <!-- /*
 * Bootstrap 5
 * Template Name: Furni
@@ -12,7 +33,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="author" content="Untree.co">
-        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="shortcut icon" href="/favicon.png">
 
         <meta name="description" content="" />
         <meta name="keywords" content="bootstrap, bootstrap4" />
@@ -22,7 +43,7 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
         <link href="/css/tiny-slider.css" rel="stylesheet">
         <link href="/css/style.css" rel="stylesheet">
-        <title>Furni Free Bootstrap 5 Template for Furniture and Interior Design Websites by Untree.co </title>
+        <title>CQ Store</title>
     </head>
 
     <body>
@@ -39,7 +60,7 @@
 
                 <div class="collapse navbar-collapse" id="navbarsFurni">
                     <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-                        <li class="nav-item active">
+                        <li class="nav-item">
                             <a class="nav-link" href="/">Home</a>
                         </li>
                         <li><a class="nav-link" href="shop.php">Shop</a></li>
@@ -47,11 +68,29 @@
                         <!--                <li><a class="nav-link" href="services.php">Services</a></li>-->
                         <!--                <li><a class="nav-link" href="blog.php">Blog</a></li>-->
                         <li><a class="nav-link" href="contact.php">Contact us</a></li>
+                        <li class="active"><a class="nav-link">Register</a></li>
+
                     </ul>
 
                     <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                        <li><a class="nav-link" href="/auth/login.php"><img src="/images/user.svg"></a></li>
-                        <li><a class="nav-link" href="/cart.php"><img src="/images/cart.svg"></a></li>
+                        <li>
+                            <a class="nav-link position-relative" href="/cart.php">
+                            <img src="/images/cart.svg">
+                            <span class="position-absolute mt-2 top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                <?php
+                                    if(isset($_SESSION['cart'])){
+                                        echo count($_SESSION['cart']);
+                                    }
+                                    else {
+                                        echo 0;
+                                    }
+                                ?>
+                                <span class="visually-hidden">unread messages</span>
+                            </span>
+                            </a>
+                        </li>
+                        <li><a class="nav-link" href="/auth/register.php"><img src="/images/user.svg"></a></li>
+
                     </ul>
                 </div>
             </div>
@@ -77,7 +116,7 @@
 
                     <!-- Registeration Form -->
                     <div class="col-md-7 col-lg-6 ml-auto">
-                        <form action="#">
+                        <form method="POST">
                             <div class="row">
 
                                 <!-- First Name -->
@@ -107,9 +146,7 @@
 
                                 <!-- Submit Button -->
                                 <div class="form-group col-lg-12 mx-auto mb-0">
-                                    <button class="btn btn-primary btn-block py-2">
-                                        <span class="font-weight-bold">Create your account</span>
-                                    </button>
+                                    <input type="submit" class="btn btn-primary btn-block py-2" value="Create your account" name="register">
                                 </div>
 
                                 <!-- Already Registered -->

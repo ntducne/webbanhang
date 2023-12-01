@@ -1,11 +1,9 @@
 <?php
 
-include '../config/connect.php';
-
 class Order {
-    public function create($user_id, $total, $status) {
+    public function create($order_code, $customer_name, $customer_addresss, $customer_email, $customer_phone, $order_note, $payment_method, $order_status, $order_date, $order_total) {
         global $conn;
-        $insert="insert into orders(user_id, total, status) values ('$user_id', '$total', '$status')";
+        $insert="insert into orders(order_code, customer_name, customer_address, customer_email, customer_phone, note, payment_method, status, order_date, total) values ('$order_code', '$customer_name', '$customer_addresss', '$customer_email', '$customer_phone', '$order_note', '$payment_method', '$order_status', '$order_date', '$order_total')";
         return mysqli_query ($conn,$insert);
     }
     public function read() {
@@ -29,9 +27,15 @@ class Order {
         return mysqli_query ($conn,$select);
     }
 
-    public function addOrderDetail($order_id, $product_id, $quantity, $price) {
+    public function readByOrderCode($orderCode) {
         global $conn;
-        $insert="insert into order_details(order_id, product_id, quantity, price) values ('$order_id', '$product_id', '$quantity', '$price')";
+        $select="select* from orders where order_code='$orderCode'";
+        return mysqli_query ($conn,$select);
+    }
+
+    public function addOrderDetail($order_id, $product_id, $name, $quantity, $price) {
+        global $conn;
+        $insert="insert into order_details(order_id, product_id, name, quantity, price) values ('$order_id', '$product_id', '$name', '$quantity', '$price')";
         return mysqli_query ($conn,$insert);
     }
 

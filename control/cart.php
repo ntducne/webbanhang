@@ -43,6 +43,23 @@ class Cart {
             header('location:index.php');
         }
     }
+
+    public function updateQty($id_prd, $quantity_prd){
+        if(isset($_SESSION['cart'])){
+            foreach($_SESSION['cart'] as $key => $values ) {
+                if($values['id_prd'] == $id_prd && $quantity_prd >= 1){
+                    $_SESSION['cart'][$key]['quantity_prd'] = $quantity_prd;
+                }
+                elseif($values['id_prd'] == $id_prd && $quantity_prd <= 0){
+                    unset($_SESSION['cart'][$key]);
+                }
+            }
+        }
+        else {
+            header('location:index.php');
+        }
+    }
+
     public function update($qty){
         foreach($qty as $key => $qty) {
             foreach($_SESSION['cart'] as $cart => $values ) {

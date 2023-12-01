@@ -1,3 +1,54 @@
+<?php
+    include 'config/connect.php';
+    include 'control/product.php';
+    include 'control/cart.php';
+    include 'control/order.php';
+    include 'config/session.php';
+    Session::init();
+    $product = new Product();
+    $products = $product->read();
+    $cart = new Cart();
+    $order = new Order();
+    $arrCart = [];
+    if(isset($_SESSION['cart'])){
+        foreach($_SESSION['cart'] as $key => $value ) {
+            $arrCart[] = $value;
+        }
+    }
+    else {
+        header('location:index.php');
+    }
+    if(isset($_POST['processOrder'])){
+        $customer_name = $_POST['customer_name'];
+        $customer_addresss = $_POST['customer_addresss'];
+        $customer_email = $_POST['customer_email'];
+        $customer_phone = $_POST['customer_phone'];
+        $order_note = $_POST['order_note'];
+        $payment_method = $_POST['payment_method'];
+        $order_status = 0;
+        $order_date = date('Y-m-d H:i:s');
+        $order_total = 0;
+        foreach($arrCart as $key => $value) {
+            $order_total += $value['price_prd'] * $value['quantity_prd'];
+        }
+        $order_total = $order_total + 50000;
+        $order_code = time();
+        $orderSuccess = $order->create($order_code, $customer_name, $customer_addresss, $customer_email, $customer_phone, $order_note, $payment_method, $order_status, $order_date, $order_total);
+        $orderID = $order->readByOrderCode($order_code);
+        $orderID = mysqli_fetch_assoc($orderID);
+        foreach($arrCart as $key => $value) {
+            $order_id = $orderID['id'];
+            $product_id = $value['id_prd'];
+            $product_name = $value['name_prd'];
+            $product_price = $value['price_prd'];
+            $product_quantity = $value['quantity_prd'];
+            $order_detail = $order->addOrderDetail($order_id, $product_id, $product_name, $product_quantity, $product_price);
+        }
+        unset($_SESSION['cart']);
+        header('location:/thankyou.php');
+    }
+?>
+
 <!-- /*
 * Bootstrap 5
 * Template Name: Furni
@@ -21,7 +72,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="css/tiny-slider.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
-    <title>Furni Free Bootstrap 5 Template for Furniture and Interior Design Websites by Untree.co </title>
+    <title>CQ Store</title>
 </head>
 
 <body>
@@ -46,11 +97,40 @@
 <!--                <li><a class="nav-link" href="services.php">Services</a></li>-->
 <!--                <li><a class="nav-link" href="blog.php">Blog</a></li>-->
                 <li><a class="nav-link" href="contact.php">Contact us</a></li>
+                <li class="active"><a class="nav-link">Checkout</a></li>
+
             </ul>
 
             <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                <li><a class="nav-link" href="/auth/login.php"><img src="images/user.svg"></a></li>
-                <li><a class="nav-link" href="cart.php"><img src="images/cart.svg"></a></li>
+                <li>
+                    <a class="nav-link position-relative" href="/cart.php">
+                    <img src="images/cart.svg">
+                    <span class="position-absolute mt-2 top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        <?php
+                            if(isset($_SESSION['cart'])){
+                                echo count($_SESSION['cart']);
+                            }
+                            else {
+                                echo 0;
+                            }
+                        ?>
+                        <span class="visually-hidden">unread messages</span>
+                      </span>
+                    </a>
+                </li>
+                <?php
+                    if(isset($_SESSION['authUser'])){
+                        echo '
+                            <li><a class="nav-link" href="/profile.php"><img src="images/user.svg"></a></li>
+                        '; 
+                    }
+                    else {
+                        echo '
+                            <li><a class="nav-link" href="/auth/login.php"><img src="images/user.svg"></a></li>
+                        ';
+                    }
+                ?>
+
             </ul>
         </div>
     </div>
@@ -77,269 +157,112 @@
 
 <div class="untree_co-section">
     <div class="container">
-        <div class="row mb-5">
+        <!-- <div class="row mb-5">
             <div class="col-md-12">
                 <div class="border p-4 rounded" role="alert">
                     Returning customer? <a href="#">Click here</a> to login
                 </div>
             </div>
-        </div>
+        </div> -->
+        <form method="post">
         <div class="row">
             <div class="col-md-6 mb-5 mb-md-0">
                 <h2 class="h3 mb-3 text-black">Billing Details</h2>
                 <div class="p-3 p-lg-5 border bg-white">
-                    <div class="form-group">
-                        <label for="c_country" class="text-black">Country <span class="text-danger">*</span></label>
-                        <select id="c_country" class="form-control">
-                            <option value="1">Select a country</option>
-                            <option value="2">bangladesh</option>
-                            <option value="3">Algeria</option>
-                            <option value="4">Afghanistan</option>
-                            <option value="5">Ghana</option>
-                            <option value="6">Albania</option>
-                            <option value="7">Bahrain</option>
-                            <option value="8">Colombia</option>
-                            <option value="9">Dominican Republic</option>
-                        </select>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-6">
-                            <label for="c_fname" class="text-black">First Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="c_fname" name="c_fname">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="c_lname" class="text-black">Last Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="c_lname" name="c_lname">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
+                    <div class="form-group row mb-3">
                         <div class="col-md-12">
-                            <label for="c_companyname" class="text-black">Company Name </label>
-                            <input type="text" class="form-control" id="c_companyname" name="c_companyname">
+                            <label for="customer_name" class="text-black">Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="customer_name" name="customer_name" placeholder="Full name">
                         </div>
                     </div>
-
-                    <div class="form-group row">
+                    <div class="form-group row mb-3">
                         <div class="col-md-12">
-                            <label for="c_address" class="text-black">Address <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="c_address" name="c_address" placeholder="Street address">
+                            <label for="customer_addresss" class="text-black">Address <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="customer_addresss" name="customer_addresss" placeholder="Address">
                         </div>
                     </div>
-
-                    <div class="form-group mt-3">
-                        <input type="text" class="form-control" placeholder="Apartment, suite, unit etc. (optional)">
-                    </div>
-
                     <div class="form-group row">
-                        <div class="col-md-6">
-                            <label for="c_state_country" class="text-black">State / Country <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="c_state_country" name="c_state_country">
+                        <div class="col-md-6 mb-3">
+                            <label for="customer_email" class="text-black">Email Address <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="customer_email" name="customer_email">
                         </div>
-                        <div class="col-md-6">
-                            <label for="c_postal_zip" class="text-black">Posta / Zip <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="c_postal_zip" name="c_postal_zip">
-                        </div>
-                    </div>
-
-                    <div class="form-group row mb-5">
-                        <div class="col-md-6">
-                            <label for="c_email_address" class="text-black">Email Address <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="c_email_address" name="c_email_address">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="c_phone" class="text-black">Phone <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="c_phone" name="c_phone" placeholder="Phone Number">
+                        <div class="col-md-6 mb-3">
+                            <label for="customer_phone" class="text-black">Phone <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="customer_phone" name="customer_phone" placeholder="Phone Number">
                         </div>
                     </div>
-
                     <div class="form-group">
-                        <label for="c_create_account" class="text-black" data-bs-toggle="collapse" href="#create_an_account" role="button" aria-expanded="false" aria-controls="create_an_account"><input type="checkbox" value="1" id="c_create_account"> Create an account?</label>
-                        <div class="collapse" id="create_an_account">
-                            <div class="py-2 mb-4">
-                                <p class="mb-3">Create an account by entering the information below. If you are a returning customer please login at the top of the page.</p>
-                                <div class="form-group">
-                                    <label for="c_account_password" class="text-black">Account Password</label>
-                                    <input type="email" class="form-control" id="c_account_password" name="c_account_password" placeholder="">
-                                </div>
-                            </div>
-                        </div>
+                        <label for="order_note" class="text-black">Order Notes</label>
+                        <textarea name="order_note" id="order_note" cols="30" rows="5" class="form-control" placeholder="Write your notes here..."></textarea>
                     </div>
-
-
-                    <div class="form-group">
-                        <label for="c_ship_different_address" class="text-black" data-bs-toggle="collapse" href="#ship_different_address" role="button" aria-expanded="false" aria-controls="ship_different_address"><input type="checkbox" value="1" id="c_ship_different_address"> Ship To A Different Address?</label>
-                        <div class="collapse" id="ship_different_address">
-                            <div class="py-2">
-
-                                <div class="form-group">
-                                    <label for="c_diff_country" class="text-black">Country <span class="text-danger">*</span></label>
-                                    <select id="c_diff_country" class="form-control">
-                                        <option value="1">Select a country</option>
-                                        <option value="2">bangladesh</option>
-                                        <option value="3">Algeria</option>
-                                        <option value="4">Afghanistan</option>
-                                        <option value="5">Ghana</option>
-                                        <option value="6">Albania</option>
-                                        <option value="7">Bahrain</option>
-                                        <option value="8">Colombia</option>
-                                        <option value="9">Dominican Republic</option>
-                                    </select>
-                                </div>
-
-
-                                <div class="form-group row">
-                                    <div class="col-md-6">
-                                        <label for="c_diff_fname" class="text-black">First Name <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" id="c_diff_fname" name="c_diff_fname">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="c_diff_lname" class="text-black">Last Name <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" id="c_diff_lname" name="c_diff_lname">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <div class="col-md-12">
-                                        <label for="c_diff_companyname" class="text-black">Company Name </label>
-                                        <input type="text" class="form-control" id="c_diff_companyname" name="c_diff_companyname">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row  mb-3">
-                                    <div class="col-md-12">
-                                        <label for="c_diff_address" class="text-black">Address <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" id="c_diff_address" name="c_diff_address" placeholder="Street address">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Apartment, suite, unit etc. (optional)">
-                                </div>
-
-                                <div class="form-group row">
-                                    <div class="col-md-6">
-                                        <label for="c_diff_state_country" class="text-black">State / Country <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" id="c_diff_state_country" name="c_diff_state_country">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="c_diff_postal_zip" class="text-black">Posta / Zip <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" id="c_diff_postal_zip" name="c_diff_postal_zip">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row mb-5">
-                                    <div class="col-md-6">
-                                        <label for="c_diff_email_address" class="text-black">Email Address <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" id="c_diff_email_address" name="c_diff_email_address">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="c_diff_phone" class="text-black">Phone <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" id="c_diff_phone" name="c_diff_phone" placeholder="Phone Number">
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="c_order_notes" class="text-black">Order Notes</label>
-                        <textarea name="c_order_notes" id="c_order_notes" cols="30" rows="5" class="form-control" placeholder="Write your notes here..."></textarea>
-                    </div>
-
                 </div>
             </div>
             <div class="col-md-6">
-
-                <div class="row mb-5">
+                <div class="row mb-3 mt-2">
                     <div class="col-md-12">
-                        <h2 class="h3 mb-3 text-black">Coupon Code</h2>
-                        <div class="p-3 p-lg-5 border bg-white">
-
-                            <label for="c_code" class="text-black mb-3">Enter your coupon code if you have one</label>
-                            <div class="input-group w-75 couponcode-wrap">
-                                <input type="text" class="form-control me-2" id="c_code" placeholder="Coupon Code" aria-label="Coupon Code" aria-describedby="button-addon2">
-                                <div class="input-group-append">
-                                    <button class="btn btn-black btn-sm" type="button" id="button-addon2">Apply</button>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row mb-5">
-                    <div class="col-md-12">
-                        <h2 class="h3 mb-3 text-black">Your Order</h2>
-                        <div class="p-3 p-lg-5 border bg-white">
+                        <h2 class="h3 text-black">Your Order</h2>
+                        <div class="p-3 border bg-white">
                             <table class="table site-block-order-table mb-5">
                                 <thead>
                                 <th>Product</th>
                                 <th>Total</th>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>Top Up T-Shirt <strong class="mx-2">x</strong> 1</td>
-                                    <td>$250.00</td>
-                                </tr>
-                                <tr>
-                                    <td>Polo Shirt <strong class="mx-2">x</strong>   1</td>
-                                    <td>$100.00</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-black font-weight-bold"><strong>Cart Subtotal</strong></td>
-                                    <td class="text-black">$350.00</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-black font-weight-bold"><strong>Order Total</strong></td>
-                                    <td class="text-black font-weight-bold"><strong>$350.00</strong></td>
-                                </tr>
+                                    <?php
+                                        $total = 0;
+                                        foreach($arrCart as $key => $value) {
+                                            $total += $value['price_prd'] * $value['quantity_prd'];
+                                            echo '
+                                                <tr>
+                                                    <td><img width="50" class="rounded" src="/uploads/'.$value['image_prd'].'"/> '.$value['name_prd'].' <strong class="mx-2">x</strong> '.$value['quantity_prd'].'</td>
+                                                    <td>'.$value['price_prd'] * $value['quantity_prd'].' VNĐ</td>
+                                                </tr>';
+                                        }
+                                    ?>
                                 </tbody>
                             </table>
-
-                            <div class="border p-3 mb-3">
-                                <h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse" href="#collapsebank" role="button" aria-expanded="false" aria-controls="collapsebank">Direct Bank Transfer</a></h3>
-
-                                <div class="collapse" id="collapsebank">
-                                    <div class="py-2">
-                                        <p class="mb-0">Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order won’t be shipped until the funds have cleared in our account.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="border p-3 mb-3">
-                                <h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse" href="#collapsecheque" role="button" aria-expanded="false" aria-controls="collapsecheque">Cheque Payment</a></h3>
-
-                                <div class="collapse" id="collapsecheque">
-                                    <div class="py-2">
-                                        <p class="mb-0">Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order won’t be shipped until the funds have cleared in our account.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="border p-3 mb-5">
-                                <h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse" href="#collapsepaypal" role="button" aria-expanded="false" aria-controls="collapsepaypal">Paypal</a></h3>
-
-                                <div class="collapse" id="collapsepaypal">
-                                    <div class="py-2">
-                                        <p class="mb-0">Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order won’t be shipped until the funds have cleared in our account.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <button class="btn btn-black btn-lg py-3 btn-block" onclick="window.location='thankyou.php'">Place Order</button>
-                            </div>
+                            
 
                         </div>
                     </div>
                 </div>
-
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <h2 class="h3 mb-3 text-black">Payment Method</h2>
+                        <div class="p-3 border bg-white">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payment_method" id="bankTransfer" value="bankTransfer" checked>
+                            <label class="form-check-label" for="bankTransfer">
+                                Direct Bank Transfer
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payment_method" id="chequePayment" value="chequePayment">
+                            <label class="form-check-label" for="chequePayment">
+                                Cheque Payment
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payment_method" id="paypal" value="paypal">
+                            <label class="form-check-label" for="paypal">
+                                Paypal
+                            </label>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2">
+                        <a href="/cart.php" class="btn btn-primary btn-block">Cart</a>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="submit" class="btn btn-primary btn-block" value="Place Order" name="processOrder">
+                        <!-- <button class="btn btn-primary btn-block" onclick="window.location.href='order.php'">Place Order</button> -->
+                    </div>
+                </div>
             </div>
         </div>
-        <!-- </form> -->
+        </form>
     </div>
 </div>
 

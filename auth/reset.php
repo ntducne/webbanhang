@@ -4,23 +4,19 @@
     include "../config/session.php";
     include "../control/auth.php";
     Session::checkLoggedClient();
-    if(isset($_POST['login'])){
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-        $auth = new Auth();
-        $login = mysqli_fetch_array($auth->login($username,$password));
-        if($login){
-            Session::set('authUser',[
-                'image' => $login['image'],
-                'name' => $login['name'],
-                'username' => $login['username'],
-                'role' => $login['role'],
-            ]);
-            header('location: /');
-        }
-        else{
-            echo "<script>alert('Username or password is incorrect')</script>";
-        }
+
+    $username = $_GET['username'];
+    $auth = new Auth();
+    $user = $auth->checkUsername($username);
+    $userForgot = mysqli_fetch_object($user);
+    if(!$userForgot){
+        header("Location: /auth/forgot.php");
+    }
+
+    if(isset($_POST['reset'])){
+        $newPassword = $_POST['newPassword'];
+        $auth->changePassword($username, $newPassword);
+        header("Location: /auth/login.php");
     }
 ?>
 
@@ -73,7 +69,7 @@
                         <!--                <li><a class="nav-link" href="services.php">Services</a></li>-->
                         <!--                <li><a class="nav-link" href="blog.php">Blog</a></li>-->
                         <li><a class="nav-link" href="/contact.php">Contact us</a></li>
-                        <li class="active"><a class="nav-link">Login</a></li>
+                        <li class="active"><a class="nav-link">Reset Password</a></li>
 
                     </ul>
 
@@ -116,31 +112,15 @@
                                 <div class="container">
                                     <div class="row">
                                         <div class="col-md-9 col-lg-8 mx-auto">
-                                            <h3 class="login-heading mb-4">Welcome back!</h3>
-
-                                            <!-- Sign In Form -->
+                                            <h3 class="login-heading mb-4">Reset Password!</h3>
                                             <form method="POST">
                                                 <div class="form-floating mb-3">
-                                                    <input type="text" class="form-control" id="floatingInput" name="username" placeholder="Username">
-                                                    <label for="floatingInput">Username</label>
-                                                </div>
-                                                <div class="form-floating mb-3">
-                                                    <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="Password">
-                                                    <label for="floatingPassword">Password</label>
+                                                    <input type="password" class="form-control" id="floatingInput" name="newPassword" placeholder="New Password">
+                                                    <label for="floatingInput">New Password</label>
                                                 </div>
                                                 <div class="d-grid">
-                                                    <input type="submit" name="login" class="btn btn-lg btn-primary btn-login text-uppercase fw-bold mb-2" value="Sign in">
-                                                    <!-- <button class="btn btn-lg btn-primary btn-login text-uppercase fw-bold mb-2" type="submit">Sign in</button> -->
-                                                    <div class="d-flex justify-content-around align-items-center">
-                                                        <div class="text-center">
-                                                            <a class="small" href="/auth/forgot.php">Forgot password?</a>
-                                                        </div>
-                                                        <div class="text-center">
-                                                        Don't have an account? <a class="small" href="/auth/register.php"> Sign up</a>
-                                                        </div>
-                                                    </div>
+                                                    <input type="submit" name="reset" class="btn btn-primary btn-login text-uppercase fw-bold mb-2" value="Reset Password">
                                                 </div>
-
                                             </form>
                                         </div>
                                     </div>

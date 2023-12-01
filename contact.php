@@ -1,3 +1,19 @@
+<?php
+    include 'config/session.php';
+    Session::init();
+    include 'config/connect.php';
+    include 'control/contact.php';  
+    $contact = new Contact();
+    
+    if(isset($_POST['action'])){
+        $fname = $_POST['first_name'];
+        $lname = $_POST['last_name'];
+        $email = $_POST['email'];
+        $message = $_POST['message'];
+        $contact->create($fname, $lname, $email, $message);
+        echo "<script>alert('Your message has been sent!')</script>";
+    }
+?>
 <!-- /*
 * Bootstrap 5
 * Template Name: Furni
@@ -21,7 +37,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="css/tiny-slider.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
-    <title>Furni Free Bootstrap 5 Template for Furniture and Interior Design Websites by Untree.co </title>
+    <title>CQ Store</title>
 </head>
 
 <body>
@@ -49,8 +65,35 @@
             </ul>
 
             <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                <li><a class="nav-link" href="/auth/login.php"><img src="images/user.svg"></a></li>
-                <li><a class="nav-link" href="cart.php"><img src="images/cart.svg"></a></li>
+                <li>
+                    <a class="nav-link position-relative" href="/cart.php">
+                    <img src="images/cart.svg">
+                    <span class="position-absolute mt-2 top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        <?php
+                            if(isset($_SESSION['cart'])){
+                                echo count($_SESSION['cart']);
+                            }
+                            else {
+                                echo 0;
+                            }
+                        ?>
+                        <span class="visually-hidden">unread messages</span>
+                      </span>
+                    </a>
+                </li>
+                <?php
+                    if(isset($_SESSION['authUser'])){
+                        echo '
+                            <li><a class="nav-link" href="/profile.php"><img src="images/user.svg"></a></li>
+                        '; 
+                    }
+                    else {
+                        echo '
+                            <li><a class="nav-link" href="/auth/login.php"><img src="images/user.svg"></a></li>
+                        ';
+                    }
+                ?>
+
             </ul>
         </div>
     </div>
@@ -132,32 +175,32 @@
                         </div>
                     </div>
 
-                    <form>
+                    <form method="POST">
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="text-black" for="fname">First name</label>
-                                    <input type="text" class="form-control" id="fname">
+                                    <input type="text" class="form-control" name="first_name">
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="text-black" for="lname">Last name</label>
-                                    <input type="text" class="form-control" id="lname">
+                                    <input type="text" class="form-control" name="last_name">
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="text-black" for="email">Email address</label>
-                            <input type="email" class="form-control" id="email">
+                            <input type="email" class="form-control" name="email">
                         </div>
 
                         <div class="form-group mb-5">
                             <label class="text-black" for="message">Message</label>
-                            <textarea name="" class="form-control" id="message" cols="30" rows="5"></textarea>
+                            <textarea class="form-control" name="message" cols="30" rows="5"></textarea>
                         </div>
-
-                        <button type="submit" class="btn btn-primary-hover-outline">Send Message</button>
+                        <input type="submit" name="action" value="Send Message"  class="btn btn-primary-hover-outline">
+                        <!-- <button type="submit" class="btn btn-primary-hover-outline">Send Message</button> -->
                     </form>
 
                 </div>

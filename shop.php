@@ -1,3 +1,25 @@
+<?php
+    include 'config/session.php';
+    Session::init();
+?>
+<?php 
+    include 'config/connect.php';
+    include 'control/product.php';
+    include 'control/cart.php';
+    $product = new Product();
+    $products = $product->read();
+    $cart = new Cart();
+    if(isset($_POST['action']) && $_POST['action'] == 'add'){
+        $id = $_POST['id'];
+        $name = $_POST['name'];
+        $price = $_POST['price'];
+        $image = $_POST['image'];
+        $quantity = $_POST['quantity'];
+        $cart->add($id, $name, $price, $image, $quantity);
+        echo '<script>alert("Product added to cart successfully")</script>';
+    }
+?>
+
 <!-- /*
 * Bootstrap 5
 * Template Name: Furni
@@ -21,7 +43,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="css/tiny-slider.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
-    <title>Furni Free Bootstrap 5 Template for Furniture and Interior Design Websites by Untree.co </title>
+    <title>CQ Store</title>
 </head>
 
 <body>
@@ -49,8 +71,35 @@
             </ul>
 
             <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                <li><a class="nav-link" href="/auth/login.php"><img src="images/user.svg"></a></li>
-                <li><a class="nav-link" href="cart.php"><img src="images/cart.svg"></a></li>
+                <li>
+                    <a class="nav-link position-relative" href="/cart.php">
+                    <img src="images/cart.svg">
+                    <span class="position-absolute mt-2 top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        <?php
+                            if(isset($_SESSION['cart'])){
+                                echo count($_SESSION['cart']);
+                            }
+                            else {
+                                echo 0;
+                            }
+                        ?>
+                        <span class="visually-hidden">unread messages</span>
+                      </span>
+                    </a>
+                </li>
+                <?php
+                    if(isset($_SESSION['authUser'])){
+                        echo '
+                            <li><a class="nav-link" href="/profile.php"><img src="images/user.svg"></a></li>
+                        '; 
+                    }
+                    else {
+                        echo '
+                            <li><a class="nav-link" href="/auth/login.php"><img src="images/user.svg"></a></li>
+                        ';
+                    }
+                ?>
+
             </ul>
         </div>
     </div>
@@ -81,118 +130,32 @@
     <div class="container">
         <div class="row">
 
-            <!-- Start Column 1 -->
-            <div class="col-12 col-md-4 col-lg-3 mb-5">
-                <a class="product-item" href="#">
-                    <img src="images/product-3.png" class="img-fluid product-thumbnail">
-                    <h3 class="product-title">Nordic Chair</h3>
-                    <strong class="product-price">$50.00</strong>
-
-                    <span class="icon-cross">
-								<img src="images/cross.svg" class="img-fluid">
-							</span>
-                </a>
-            </div>
-            <!-- End Column 1 -->
+        <?php foreach ($products as $product) { ?>
 
             <!-- Start Column 2 -->
-            <div class="col-12 col-md-4 col-lg-3 mb-5">
-                <a class="product-item" href="#">
-                    <img src="images/product-1.png" class="img-fluid product-thumbnail">
-                    <h3 class="product-title">Nordic Chair</h3>
-                    <strong class="product-price">$50.00</strong>
-
-                    <span class="icon-cross">
-								<img src="images/cross.svg" class="img-fluid">
-							</span>
-                </a>
+            <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
+                <div class="product-item">
+                    <a href="detail.php?id=<?php echo $product['id'] ?>" style="text-decoration: none">
+                        <img src="/uploads/<?php echo $product['image'] ?>" class="img-fluid product-thumbnail">
+                        <h3 class="product-title"><?php echo $product['name'] ?></h3>
+                        <strong class="product-price"><?php echo $product['price'] ?></strong>
+                    </a>
+                    <form method="post">
+                        <input type="hidden" name="id" value="<?php echo $product['id'] ?>">
+                        <input type="hidden" name="name" value="<?php echo $product['name'] ?>">
+                        <input type="hidden" name="price" value="<?php echo $product['price'] ?>">
+                        <input type="hidden" name="image" value="<?php echo $product['image'] ?>">
+                        <input type="hidden" name="quantity" value="1">
+                        <input type="hidden" name="action" value="add">
+                        <button class="icon-cross" type="submit">
+                            <img src="/images/cross.svg" class="img-fluid">
+                        </button>
+                    </form>
+                </div>
             </div>
             <!-- End Column 2 -->
+            <?php } ?>
 
-            <!-- Start Column 3 -->
-            <div class="col-12 col-md-4 col-lg-3 mb-5">
-                <a class="product-item" href="#">
-                    <img src="images/product-2.png" class="img-fluid product-thumbnail">
-                    <h3 class="product-title">Kruzo Aero Chair</h3>
-                    <strong class="product-price">$78.00</strong>
-
-                    <span class="icon-cross">
-								<img src="images/cross.svg" class="img-fluid">
-							</span>
-                </a>
-            </div>
-            <!-- End Column 3 -->
-
-            <!-- Start Column 4 -->
-            <div class="col-12 col-md-4 col-lg-3 mb-5">
-                <a class="product-item" href="#">
-                    <img src="images/product-3.png" class="img-fluid product-thumbnail">
-                    <h3 class="product-title">Ergonomic Chair</h3>
-                    <strong class="product-price">$43.00</strong>
-
-                    <span class="icon-cross">
-								<img src="images/cross.svg" class="img-fluid">
-							</span>
-                </a>
-            </div>
-            <!-- End Column 4 -->
-
-
-            <!-- Start Column 1 -->
-            <div class="col-12 col-md-4 col-lg-3 mb-5">
-                <a class="product-item" href="#">
-                    <img src="images/product-3.png" class="img-fluid product-thumbnail">
-                    <h3 class="product-title">Nordic Chair</h3>
-                    <strong class="product-price">$50.00</strong>
-
-                    <span class="icon-cross">
-								<img src="images/cross.svg" class="img-fluid">
-							</span>
-                </a>
-            </div>
-            <!-- End Column 1 -->
-
-            <!-- Start Column 2 -->
-            <div class="col-12 col-md-4 col-lg-3 mb-5">
-                <a class="product-item" href="#">
-                    <img src="images/product-1.png" class="img-fluid product-thumbnail">
-                    <h3 class="product-title">Nordic Chair</h3>
-                    <strong class="product-price">$50.00</strong>
-
-                    <span class="icon-cross">
-								<img src="images/cross.svg" class="img-fluid">
-							</span>
-                </a>
-            </div>
-            <!-- End Column 2 -->
-
-            <!-- Start Column 3 -->
-            <div class="col-12 col-md-4 col-lg-3 mb-5">
-                <a class="product-item" href="#">
-                    <img src="images/product-2.png" class="img-fluid product-thumbnail">
-                    <h3 class="product-title">Kruzo Aero Chair</h3>
-                    <strong class="product-price">$78.00</strong>
-
-                    <span class="icon-cross">
-								<img src="images/cross.svg" class="img-fluid">
-							</span>
-                </a>
-            </div>
-            <!-- End Column 3 -->
-
-            <!-- Start Column 4 -->
-            <div class="col-12 col-md-4 col-lg-3 mb-5">
-                <a class="product-item" href="#">
-                    <img src="images/product-3.png" class="img-fluid product-thumbnail">
-                    <h3 class="product-title">Ergonomic Chair</h3>
-                    <strong class="product-price">$43.00</strong>
-
-                    <span class="icon-cross">
-								<img src="images/cross.svg" class="img-fluid">
-							</span>
-                </a>
-            </div>
-            <!-- End Column 4 -->
 
         </div>
     </div>

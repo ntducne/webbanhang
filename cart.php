@@ -1,3 +1,40 @@
+<?php
+    include 'config/connect.php';
+    include 'control/product.php';
+    include 'control/cart.php';
+    include 'config/session.php';
+    Session::init();
+    $product = new Product();
+    $products = $product->read();
+    $cart = new Cart();
+
+    $arrCart = [];
+    if(isset($_SESSION['cart'])){
+        foreach($_SESSION['cart'] as $key => $value ) {
+            $arrCart[] = $value;
+        }
+    }
+
+    if(isset($_POST['updateCart']) && $_POST['updateCart'] == 'Update Cart'){
+        $id_prd = $_POST['id_prd'];
+        $quantity_prd = $_POST['quantity-amount'];
+        foreach($id_prd as $key => $value){
+            $cart->updateQty($value, $quantity_prd[$key]);
+            if($quantity_prd[$key] <= 0){
+                $cart->delete($value);
+            }
+        }
+        header('location:cart.php');
+    }
+
+if(isset($_POST['deleteItemCart'])){
+    $cart->delete($_POST['itemDelete']);
+    header('location:cart.php');
+}
+
+?>
+
+
 <!-- /*
 * Bootstrap 5
 * Template Name: Furni
@@ -21,7 +58,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="css/tiny-slider.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
-    <title>Furni Free Bootstrap 5 Template for Furniture and Interior Design Websites by Untree.co </title>
+    <title>CQ Store</title>
 </head>
 
 <body>
@@ -46,11 +83,40 @@
 <!--                <li><a class="nav-link" href="services.php">Services</a></li>-->
 <!--                <li><a class="nav-link" href="blog.php">Blog</a></li>-->
                 <li><a class="nav-link" href="contact.php">Contact us</a></li>
+                <li class="active"><a class="nav-link">Cart</a></li>
+
             </ul>
 
             <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                <li><a class="nav-link" href="/auth/login.php"><img src="images/user.svg"></a></li>
-                <li><a class="nav-link" href="cart.php"><img src="images/cart.svg"></a></li>
+                <li>
+                    <a class="nav-link position-relative" href="/cart.php">
+                    <img src="images/cart.svg">
+                    <span class="position-absolute mt-2 top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        <?php
+                            if(isset($_SESSION['cart'])){
+                                echo count($_SESSION['cart']);
+                            }
+                            else {
+                                echo 0;
+                            }
+                        ?>
+                        <span class="visually-hidden">unread messages</span>
+                      </span>
+                    </a>
+                </li>
+                <?php
+                    if(isset($_SESSION['authUser'])){
+                        echo '
+                            <li><a class="nav-link" href="/profile.php"><img src="images/user.svg"></a></li>
+                        '; 
+                    }
+                    else {
+                        echo '
+                            <li><a class="nav-link" href="/auth/login.php"><img src="images/user.svg"></a></li>
+                        ';
+                    }
+                ?>
+
             </ul>
         </div>
     </div>
@@ -79,131 +145,113 @@
 
 <div class="untree_co-section before-footer-section">
     <div class="container">
-        <div class="row mb-5">
-            <form class="col-md-12" method="post">
+        <form class="col-md-12" method="post">
+            <div class="row mb-5">
                 <div class="site-blocks-table">
                     <table class="table">
                         <thead>
-                        <tr>
-                            <th class="product-thumbnail">Image</th>
-                            <th class="product-name">Product</th>
-                            <th class="product-price">Price</th>
-                            <th class="product-quantity">Quantity</th>
-                            <th class="product-total">Total</th>
-                            <th class="product-remove">Remove</th>
-                        </tr>
+                            <tr>
+                                <th class="product-thumbnail">Image</th>
+                                <th class="product-name">Product</th>
+                                <th class="product-price">Price</th>
+                                <th class="product-quantity">Quantity</th>
+                                <th class="product-total">Total</th>
+                                <th class="product-remove">Remove</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td class="product-thumbnail">
-                                <img src="images/product-1.png" alt="Image" class="img-fluid">
-                            </td>
-                            <td class="product-name">
-                                <h2 class="h5 text-black">Product 1</h2>
-                            </td>
-                            <td>$49.00</td>
-                            <td>
-                                <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
-                                    <div class="input-group-prepend">
-                                        <button class="btn btn-outline-black decrease" type="button">&minus;</button>
+                            <?php foreach($arrCart as $key => $value): ?>
+                            <input type="hidden" name="id_prd[]" value="<?php echo $value['id_prd'] ?>">
+                            <tr>
+                                <td class="product-thumbnail">
+                                    <img src="/uploads/<?php echo $value['image_prd'] ?>" alt="Image" class="img-fluid">
+                                </td>
+                                <td class="product-name">
+                                    <h2 class="h5 text-black"><?php echo $value['name_prd'] ?></h2>
+                                </td>
+                                <td><?php echo $value['price_prd'] ?></td>
+                                <td>
+                                    <div class="input-group mb-3 d-flex justify-content-start align-items-center quantity-container mx-auto" style="max-width: 120px;">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-outline-black decrease" type="button">&minus;</button>
+                                        </div>
+                                        <input type="text" class="form-control text-center rounded-pill quantity-amount" name="quantity-amount[]" value="<?php echo $value['quantity_prd'] ?>" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-black increase" type="button">&plus;</button>
+                                        </div>
                                     </div>
-                                    <input type="text" class="form-control text-center quantity-amount" value="1" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-outline-black increase" type="button">&plus;</button>
-                                    </div>
-                                </div>
-
-                            </td>
-                            <td>$49.00</td>
-                            <td><a href="#" class="btn btn-black btn-sm">X</a></td>
-                        </tr>
-
-                        <tr>
-                            <td class="product-thumbnail">
-                                <img src="images/product-2.png" alt="Image" class="img-fluid">
-                            </td>
-                            <td class="product-name">
-                                <h2 class="h5 text-black">Product 2</h2>
-                            </td>
-                            <td>$49.00</td>
-                            <td>
-                                <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
-                                    <div class="input-group-prepend">
-                                        <button class="btn btn-outline-black decrease" type="button">&minus;</button>
-                                    </div>
-                                    <input type="text" class="form-control text-center quantity-amount" value="1" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-outline-black increase" type="button">&plus;</button>
-                                    </div>
-                                </div>
-
-                            </td>
-                            <td>$49.00</td>
-                            <td><a href="#" class="btn btn-black btn-sm">X</a></td>
-                        </tr>
+                                </td>
+                                <td><?php echo $value['price_prd'] * $value['quantity_prd'] ?></td>
+                                <td>
+                                    <input type="hidden" name="itemDelete" value="<?php echo $value['id_prd'] ?>">
+                                    <input type="submit" class="btn btn-black btn-sm" value="X" name="deleteItemCart">
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
-            </form>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="row mb-5">
-                    <div class="col-md-6 mb-3 mb-md-0">
-                        <button class="btn btn-black btn-sm btn-block">Update Cart</button>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row mb-5">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <input type="submit" class="btn btn-black btn-sm btn-block" value="Update Cart" name="updateCart">
+<!--                            <button class="btn btn-black btn-sm btn-block">Update Cart</button>-->
+                        </div>
+<!--                        <div class="col-md-6">-->
+<!--                            <button class="btn btn-outline-black btn-sm btn-block">Continue Shopping</button>-->
+<!--                        </div>-->
                     </div>
-                    <div class="col-md-6">
-                        <button class="btn btn-outline-black btn-sm btn-block">Continue Shopping</button>
-                    </div>
+<!--                    <div class="row">-->
+<!--                        <div class="col-md-12">-->
+<!--                            <label class="text-black h4" for="coupon">Coupon</label>-->
+<!--                            <p>Enter your coupon code if you have one.</p>-->
+<!--                        </div>-->
+<!--                        <div class="col-md-8 mb-3 mb-md-0">-->
+<!--                            <input type="text" class="form-control py-3" id="coupon" placeholder="Coupon Code">-->
+<!--                        </div>-->
+<!--                        <div class="col-md-4">-->
+<!--                            <button class="btn btn-black">Apply Coupon</button>-->
+<!--                        </div>-->
+<!--                    </div>-->
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <label class="text-black h4" for="coupon">Coupon</label>
-                        <p>Enter your coupon code if you have one.</p>
-                    </div>
-                    <div class="col-md-8 mb-3 mb-md-0">
-                        <input type="text" class="form-control py-3" id="coupon" placeholder="Coupon Code">
-                    </div>
-                    <div class="col-md-4">
-                        <button class="btn btn-black">Apply Coupon</button>
+                <div class="col-md-6 pl-5">
+                    <div class="row justify-content-end">
+                        <div class="col-md-7">
+                            <div class="row">
+                                <div class="col-md-12 text-right border-bottom mb-3">
+                                    <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <span class="text-black">Total</span>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <strong class="text-black">
+                                        <?php
+                                            $total = 0;
+                                            foreach($arrCart as $key => $value){
+                                                $total += $value['price_prd'] * $value['quantity_prd'];
+                                            }
+                                            echo $total;
+                                        ?>
+                                    </strong>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <a href="/checkout.php" class="btn btn-black btn-lg py-3 btn-block">Proceed To Checkout</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 pl-5">
-                <div class="row justify-content-end">
-                    <div class="col-md-7">
-                        <div class="row">
-                            <div class="col-md-12 text-right border-bottom mb-5">
-                                <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <span class="text-black">Subtotal</span>
-                            </div>
-                            <div class="col-md-6 text-right">
-                                <strong class="text-black">$230.00</strong>
-                            </div>
-                        </div>
-                        <div class="row mb-5">
-                            <div class="col-md-6">
-                                <span class="text-black">Total</span>
-                            </div>
-                            <div class="col-md-6 text-right">
-                                <strong class="text-black">$230.00</strong>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <button class="btn btn-black btn-lg py-3 btn-block" onclick="window.location='checkout.php'">Proceed To Checkout</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </form>
     </div>
 </div>
 

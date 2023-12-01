@@ -31,6 +31,7 @@ class Session {
             header("Location:/");
         }
     }
+    
     public static function destroy(){
         session_destroy();
         header("Location: /admin/login.php");
@@ -38,4 +39,12 @@ class Session {
     public static function unsetSession($key){
         unset($_SESSION[$key]);
     }
+
+    public static function checkLoggedClient(){
+        self::init();
+        if (self::get("authUser")) {
+            header("Location:/");
+        }
+    }
+
 }

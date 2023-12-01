@@ -18,15 +18,17 @@ body {
   background-color: #eff2f1; }
 
 a {
-  text-decoration: none;
+  text-decoration: none !important;
   -webkit-transition: .3s all ease;
   -o-transition: .3s all ease;
   transition: .3s all ease;
   color: #2f2f2f;
-  text-decoration: underline; }
+  /*text-decoration: underline; */
+}
   a:hover {
     color: #2f2f2f;
-    text-decoration: none; }
+    text-decoration: none !important;
+  }
   a.more {
     font-weight: 600; }
 

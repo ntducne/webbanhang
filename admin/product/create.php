@@ -29,7 +29,8 @@ $image = $user['image'];
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Responsive Bootstrap Advance Admin Template</title>
+    <title>CQ Store - Admin</title>
+<link rel="shortcut icon" href="/favicon.png">
 
     <!-- BOOTSTRAP STYLES-->
     <link href="../assets/css/bootstrap.css" rel="stylesheet"/>

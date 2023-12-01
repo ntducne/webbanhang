@@ -18,6 +18,13 @@ if (isset($_POST['deleteProduct'])) {
     unlink("../../uploads/".$productDetail->image);
     $id = $_POST['id'];
     $product->delete($id);
+
+    // get item cart
+    $cart = Session::get('cart');
+    $cart = array_filter($cart, function ($item) use ($id) {
+        return $item['id_prd'] != $id;
+    });
+    Session::set('cart', $cart);
     header('Location: ./index.php');
 }
 ?>
@@ -27,7 +34,8 @@ if (isset($_POST['deleteProduct'])) {
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Responsive Bootstrap Advance Admin Template</title>
+    <title>CQ Store - Admin</title>
+<link rel="shortcut icon" href="/favicon.png">
 
     <!-- BOOTSTRAP STYLES-->
     <link href="../assets/css/bootstrap.css" rel="stylesheet"/>
