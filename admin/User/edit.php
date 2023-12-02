@@ -59,6 +59,19 @@
     <link href="../assets/css/custom.css" rel="stylesheet"/>
     <!-- GOOGLE FONTS-->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
+<style lang="">
+        .dropdown {
+            margin-top: 9px;
+            height: 30px !important;
+        }
+        .dropdown-toggle {
+            background: transparent !important;
+            border: none !important;
+        }
+        .dropdown-toggle::after {
+            display: none !important; 
+        }
+    </style>
 </head>
 <body>
 <div id="wrapper">
@@ -70,7 +83,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index.html">COMPANY NAME</a>
+            <a class="navbar-brand" href="/admin/">CQ Store</a>
         </div>
 
         <div class="header-right">
@@ -99,6 +112,7 @@
                 <li><a class="active-menu" href="/admin/product/">Product </a></li>
                 <li><a href="/admin/user/">User </a></li>
                 <li><a href="/admin/order/">Order </a></li>
+<li><a href="/admin/review/">Review </a></li>
 
             </ul>
         </div>

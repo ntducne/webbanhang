@@ -11,7 +11,6 @@ class User {
         $select = "SELECT * FROM users WHERE id != '1'";
         return mysqli_query($conn, $select);
     }
-
     public function update($id, $name, $username, $password, $email, $phone, $image, $role, $status) {
         global $conn;
         $update = "UPDATE users SET name='$name', username='$username', password='$password', email='$email', phone='$phone', image='$image', role='$role', status='$status' WHERE id='$id'";

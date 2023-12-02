@@ -1,23 +1,32 @@
+
 <?php
-    include "../config/connect.php";
-    include "../config/session.php";
-    include "../control/auth.php";
-    Session::checkLoggedClient();
-    if(isset($_POST['register'])){
-        $name = $_POST['name'];
-        $username = $_POST['username'];
-        $email = $_POST['email'];
-        $phone = $_POST['phone'];
-        $password = md5($_POST['password']);
-        $auth = new Auth();
-        $register = $auth->register($name, $username, $email, $phone, $password);
-        if($register){
-            header("Location: /auth/login.php");
-        }else{
-            echo "Register failed";
+    include "config/connect.php";
+    include "config/session.php";
+    include "control/auth.php";
+    include 'config/formatMoney.php';
+    include 'config/renderStatus.php';
+    include 'control/order.php';
+
+    if(isset($_GET['order_code'])) {
+        $order_code = $_GET['order_code'];
+        $orderModel = new Order();
+        $orders = $orderModel->readByOrderCode($order_code);
+        if($orders->num_rows == 0) {
+            $error = 'Order not found';
+        }
+        else {
+            $order = $orders->fetch_assoc();
+            $orderDetail = $orderModel->getOrderDetail($order['id']);
+            if(isset($_POST['updateStatusOrder'])) {
+                $status = $_POST['updateStatusOrder'];
+                $orderModel->update($order_code, $status);
+                header("Location: ./detail.php?order_code=$order_code");
+            }
         }
     }
+    
 ?>
+
 
 <!-- /*
 * Bootstrap 5
@@ -44,6 +53,33 @@
         <link href="/css/tiny-slider.css" rel="stylesheet">
         <link href="/css/style.css" rel="stylesheet">
         <title>CQ Store</title>
+        <style>
+        .card {
+            box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
+        }
+
+        .card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            word-wrap: break-word;
+            background-color: #fff;
+            background-clip: border-box;
+            border: 0 solid rgba(0, 0, 0, .125);
+            border-radius: 1rem;
+        }
+
+        .text-reset {
+            --bs-text-opacity: 1;
+            color: inherit !important;
+        }
+
+        a {
+            color: #5465ff;
+            text-decoration: none;
+        }
+    </style>
     <style lang="">
         .dropdown {
             margin-top: 9px;
@@ -76,13 +112,12 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/">Home</a>
                         </li>
-                        <li><a class="nav-link" href="shop.php">Shop</a></li>
-                        <li><a class="nav-link" href="about.php">About us</a></li>
+                        <li><a class="nav-link" href="/shop.php">Shop</a></li>
+                        <li><a class="nav-link" href="/about.php">About us</a></li>
                         <!--                <li><a class="nav-link" href="services.php">Services</a></li>-->
                         <!--                <li><a class="nav-link" href="blog.php">Blog</a></li>-->
-                        <li><a class="nav-link" href="contact.php">Contact us</a></li>
-                        <li><a href="check_order.php" class="nav-link">Check Order</a></li>
-                        <li class="active"><a class="nav-link">Register</a></li>
+                        <li><a class="nav-link" href="/contact.php">Contact us</a></li>
+                        <li class="active"><a href="/check_order.php" class="nav-link">Check Order</a></li>
 
                     </ul>
 
@@ -103,79 +138,159 @@
                             </span>
                             </a>
                         </li>
-                        <!-- <li><a class="nav-link" href="/auth/register.php"><img src="/images/user.svg"></a></li> -->
+                        <li><a class="nav-link" href="/auth/register.php"><img src="/images/user.svg"></a></li>
 
                     </ul>
                 </div>
             </div>
 
         </nav>
-        <!-- End Header/Navigation -->
 
-        <!-- Start Product Section -->
+
         <div class="product-section">
             <div class="container">
+                <div class="container-fluid ps-md-0">
+                    <div class="row g-0">
+                        <div class="d-none d-md-flex col-md-4 col-lg-6 bg-image">
+                            <img src="/images/product-2.png" alt="">
+                        </div>
+                        <div class="col-md-8 col-lg-6">
+                            <div class="login d-flex align-items-center py-5">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-md-9 col-lg-8 mx-auto">
+                                            <h3 class="login-heading mb-4">Find Order</h3>
 
-                <!-- Navbar-->
-                <div class="row py-5 mt-4 align-items-center">
-                    <!-- For Demo Purpose -->
-                    <div class="col-md-5 pr-lg-5 mb-5 mb-md-0">
-                        <img src="https://bootstrapious.com/i/snippets/sn-registeration/illustration.svg" alt="" class="img-fluid mb-3 d-none d-md-block">
-                        <h1>Create an Account</h1>
-                        <p class="font-italic text-muted mb-0">Create a minimal registeration page using Bootstrap 4 HTML form elements.</p>
-                        <p class="font-italic text-muted">Snippet By <a href="https://bootstrapious.com" class="text-muted">
-                            <u>Bootstrapious</u></a>
-                        </p>
-                    </div>
-
-                    <!-- Registeration Form -->
-                    <div class="col-md-7 col-lg-6 ml-auto">
-                        <form method="POST">
-                            <div class="row">
-
-                                <!-- First Name -->
-                                <div class="input-group col-lg-6 mb-4">
-                                    <input id="name" type="text" name="name" placeholder="Name" class="form-control bg-white border-left-0 border-md">
+                                            <!-- Sign In Form -->
+                                            <form method="GET">
+                                                <div class="form-floating">
+                                                    <input type="text" class="form-control" id="floatingInput" name="order_code" placeholder="Order Code" required value="<?php echo $order_code ?? '' ?>">
+                                                    <label for="floatingInput">Order Code</label>
+                                                </div>
+                                                <span style="color: red"><?php if(isset($error)) { echo $error; } ?></span>
+                                                <div class="mt-3">
+                                                    <button type="submit" class="btn btn-sm btn-primary btn-login text-uppercase fw-bold mb-2" name="find_order">Find Order</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
-
-                                <!-- First Name -->
-                                <div class="input-group col-lg-6 mb-4">
-                                    <input id="username" type="text" name="username" placeholder="Username" class="form-control bg-white border-left-0 border-md">
-                                </div>
-
-                                <!-- Email Address -->
-                                <div class="input-group col-lg-12 mb-4">
-                                    <input id="email" type="email" name="email" placeholder="Email" class="form-control bg-white border-left-0 border-md">
-                                </div>
-
-                                <!-- Phone Number -->
-                                <div class="input-group col-lg-12 mb-4">
-                                    <input id="phone" type="tel" name="phone" placeholder="Phone" class="form-control bg-white border-md border-left-0 pl-3">
-                                </div>
-
-                                <!-- Password -->
-                                <div class="input-group col-lg-12 mb-4">
-                                    <input id="password" type="password" name="password" placeholder="Password" class="form-control bg-white border-left-0 border-md">
-                                </div>
-
-                                <!-- Submit Button -->
-                                <div class="form-group col-lg-12 mx-auto mb-0">
-                                    <input type="submit" class="btn btn-primary btn-block py-2" value="Create your account" name="register">
-                                </div>
-
-                                <!-- Already Registered -->
-                                <div class="text-center w-100 mt-5">
-                                    <p class="text-muted font-weight-bold">Already Registered? <a href="./login.php" class="text-primary ml-2">Login</a></p>
-                                </div>
-
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
 
-
             </div>
         </div>
+
+
+        <?php if(isset($order_code) && !isset($error)) { ?>
+
+        <!-- End Header/Navigation -->
+        <div class="container mt-5" id="page-wrapper">
+            <div id="page-inner">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="page-head-line">Order Detail - #<?php echo $order['order_code'] ?> - <?php echo $order['order_date'] ?></h1>
+                        <!-- <h1 class="page-subhead-line"><a href="./create.php" class="btn btn-success">Create</a></h1> -->
+                    </div>
+                </div>
+
+                <!-- Main content -->
+                <div class="row mt-5">
+                    <div class="col-lg-8">
+                        <!-- Details -->
+                        <div class="card mb-4">
+                            <div class="card-body" style="padding: 20px !important;">
+
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Quantity</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $total = 0; foreach ($orderDetail as $item) : $total += $item['price'] ?>
+                                            <tr>
+                                                <td><p><?php echo $item['name'] ?></p></td>
+                                                <td><?php echo $item['quantity'] ?></td>
+                                                <td class="text-end"><?php echo formatMoneyVN($item['price']) ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="2" class="text-right font-weight-bold">Subtotal</td>
+                                            <td class="text-end"><?php echo formatMoneyVN($total) ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" class="text-right font-weight-bold">Shipping</td>
+                                            <td class="text-end"><?php echo formatMoneyVN(20000) ?></td>
+                                        </tr>
+                                        <!-- <tr>
+                                            <td colspan="2">Discount (Code: NEWYEAR)</td>
+                                            <td class="text-danger text-end">-$10.00</td>
+                                        </tr> -->
+                                        <tr class="">
+                                            <td colspan="2" class="text-right font-weight-bold">TOTAL</td>
+                                            <td class="text-end"><?php echo formatMoneyVN($total + 20000) ?></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- Payment -->
+                        <div class="card mb-4" style="margin-top: 20px !important;">
+                            <div class="card-body" style="padding: 20px !important;">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <h3>Payment Method</h3>
+                                        <p><?php echo $order['payment_method'] ?><br>
+                                            Total: <?php echo formatMoneyVN($total + 20000) ?> <br> <?php echo  renderStatusOrder($order['status']) ?></p>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4" >
+                        <div class="card mb-4">
+                            <div class="card-body " style="padding: 20px;">
+                                <h3>Customer Notes</h3>
+                                <p><?php echo $order['note'] ?></p>
+                            </div>
+                        </div>
+                        <div class="card mb-4" style="margin-top: 20px;">
+                            <div class="card-body" style="padding: 20px;">
+                                <h3>Shipping Information</h3>
+                                <div class="mb-3"><b><?php echo $order['customer_name'] ?></b></div>
+                                <div class="mb-2"><?php echo $order['customer_address'] ?></div>
+                                <a href="tel:<?php echo $order['customer_phone'] ?>"><?php echo $order['customer_phone'] ?></a> 
+                            </div>
+                        </div>
+                        <div class="card mb-4" style="margin-top: 20px;">
+                            <div class="card-body " style="padding: 20px;">
+                                <?php echo renderStatusOrder($order['status']) ?>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <!-- Start Product Section -->
+
+        <?php }  ?>
+        
+
+
+        
+        
+
+
+
         <!-- End Product Section -->
         <!-- Start Footer Section -->
         <footer class="footer-section">

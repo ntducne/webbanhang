@@ -9,7 +9,7 @@ class Auth {
     public function register($name, $username, $email, $phone, $password) {
         global $conn;
         $insert="insert into users (name, username, password, email, phone, role, image ) values (
-            '$name', '$username', '$password', '$email', '$phone', 2, 'https://res.cloudinary.com/dteefej4w/image/upload/v1681474078/users/585e4bf3cb11b227491c339a_gtyczj.png'
+            '$name', '$username', '$password', '$email', '$phone', 2, 'user.png'
         )";
         return mysqli_query ($conn,$insert);
     }

@@ -43,7 +43,20 @@
         <link href="/css/tiny-slider.css" rel="stylesheet">
         <link href="/css/style.css" rel="stylesheet">
         <title>CQ Store</title>
-    </head>
+    <style lang="">
+        .dropdown {
+            margin-top: 9px;
+            height: 30px !important;
+        }
+        .dropdown-toggle {
+            background: transparent !important;
+            border: none !important;
+        }
+        .dropdown-toggle::after {
+            display: none !important; 
+        }
+    </style>
+</head>
 
     <body>
 
@@ -67,6 +80,7 @@
                         <!--                <li><a class="nav-link" href="services.php">Services</a></li>-->
                         <!--                <li><a class="nav-link" href="blog.php">Blog</a></li>-->
                         <li><a class="nav-link" href="/contact.php">Contact us</a></li>
+                        <li><a href="/check_order.php" class="nav-link">Check Order</a></li>
                         <li class="active"><a class="nav-link">Forgot Password</a></li>
 
                     </ul>
@@ -88,7 +102,7 @@
                             </span>
                             </a>
                         </li>
-                        <li><a class="nav-link" href="/auth/register.php"><img src="/images/user.svg"></a></li>
+                        <!-- <li><a class="nav-link" href="/auth/register.php"><img src="/images/user.svg"></a></li> -->
 
                     </ul>
                 </div>
@@ -115,6 +129,9 @@
                                                 <div class="form-floating mb-3">
                                                     <input type="text" class="form-control" id="floatingInput" name="username" placeholder="Username">
                                                     <label for="floatingInput">Username</label>
+                                                </div>
+                                                <div class="d-grid">
+                                                    <p class="text-center">Remembered your password? <a href="/auth/login.php">Login</a></p>
                                                 </div>
                                                 <div class="d-grid">
                                                     <input type="submit" name="forgot" class="btn btn-primary btn-login text-uppercase fw-bold mb-2" value="Submit">

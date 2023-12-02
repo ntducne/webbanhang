@@ -10,8 +10,12 @@
         $login = mysqli_fetch_array($auth->login($username,$password));
         if($login){
             Session::set('authUser',[
+                'id' => $login['id'],
                 'image' => $login['image'],
                 'name' => $login['name'],
+                'email' => $login['email'],
+                'phone' => $login['phone'],
+                'address' => $login['address'],
                 'username' => $login['username'],
                 'role' => $login['role'],
             ]);
@@ -35,6 +39,19 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link rel="stylesheet" href="./assets/css/login.css">
+<style lang="">
+        .dropdown {
+            margin-top: 9px;
+            height: 30px !important;
+        }
+        .dropdown-toggle {
+            background: transparent !important;
+            border: none !important;
+        }
+        .dropdown-toggle::after {
+            display: none !important; 
+        }
+    </style>
 </head>
 <body>
 <div class="wrapper fadeInDown">

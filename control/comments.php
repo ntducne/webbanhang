@@ -1,31 +1,24 @@
 <?php
 
-include '../config/connect.php';
-
 class Comment {
-    public function create($name, $description) {
+    public function create($customer_name, $customer_image, $star, $product_id, $review, $time) {
         global $conn;
-        $insert="insert into comments(name, description) values ('$name', '$description')";
-        return mysqli_query ($conn,$insert);
+        $sql = "INSERT INTO comments (customer_name, customer_image, star, product_id, review, time, status) VALUES ('$customer_name', '$customer_image', '$star', '$product_id', '$review', '$time', 1)";
+        return mysqli_query($conn, $sql);
     }
     public function read() {
         global $conn;
-        $select="select* from comments";
-        return mysqli_query ($conn,$select);
+        $sql = "SELECT * FROM comments";
+        return mysqli_query($conn, $sql);
     }
-    public function update($id, $name, $description) {
+    public function readByProductId($product_id) {
         global $conn;
-        $update="update comments set name='$name', description='$description' where id='$id'";
-        return mysqli_query ($conn,$update);
+        $sql = "SELECT * FROM comments WHERE product_id='$product_id'";
+        return mysqli_query($conn, $sql);
     }
-    public function delete($id) {
+    public function update($review_id, $status) {
         global $conn;
-        $delete="delete from comments where id='$id'";
-        return mysqli_query ($conn,$delete);
-    }
-    public function readById($id) {
-        global $conn;
-        $select="select* from comments where id='$id'";
-        return mysqli_query ($conn,$select);
+        $sql = "UPDATE comments SET status='$status' WHERE id='$review_id'";
+        return mysqli_query($conn, $sql);
     }
 }

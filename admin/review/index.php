@@ -1,18 +1,25 @@
 <?php
     include "../../config/session.php";
     Session::checkSession();
-$user = Session::get('authUser');
-$username = $user['username'];
-$name = $user['name'];
-$image = $user['image'];
+    $user = Session::get('authUser');
+    $username = $user['username'];
+    $name = $user['name'];
+    $image = $user['image'];
     include '../../config/connect.php';
-    include '../../control/category.php';
-    $category = new Category();
-    $categories = $category->read();
-    if(isset($_POST['deleteCategory'])){
-        $id = $_POST['id'];
-        $category->delete($id);
-        header('Location: ./index.php');
+    include '../../config/formatMoney.php';
+    include '../../config/renderStatus.php';
+    include '../../control/comments.php';
+    include '../../control/product.php';
+    $product = new Product();
+    $comment = new Comment();
+    $comments = $comment->read();
+    if (isset($_POST['block'])) {
+        $comment->update($_POST['review_id'], 0);
+        header('Location: /admin/review/');
+    }
+    if (isset($_POST['open'])) {
+        $comment->update($_POST['review_id'], 1);
+        header('Location: /admin/review/');
     }
 ?>
 
@@ -83,12 +90,12 @@ $image = $user['image'];
                 </li>
 
 
-                <li><a  href="/admin/">Dashboard</a></li>
-                <li><a class="active-menu" href="/admin/category/">Category </a></li>
+                <li><a href="/admin/">Dashboard</a></li>
+                <li><a href="/admin/category/">Category </a></li>
                 <li><a href="/admin/product/">Product </a></li>
                 <li><a href="/admin/user/">User </a></li>
                 <li><a href="/admin/order/">Order </a></li>
-                <li><a href="/admin/review/">Review </a></li>
+                <li><a class="active-menu" href="/admin/review/">Review </a></li>
 
             </ul>
         </div>
@@ -99,8 +106,8 @@ $image = $user['image'];
         <div id="page-inner">
             <div class="row">
                 <div class="col-md-12">
-                    <h1 class="page-head-line">Category</h1>
-                    <h1 class="page-subhead-line"><a href="./create.php" class="btn btn-success">Create</a></h1>
+                    <h1 class="page-head-line">Order</h1>
+                    <!-- <h1 class="page-subhead-line"><a href="./create.php" class="btn btn-success">Create</a></h1> -->
                 </div>
             </div>
             <div class="table-responsive">
@@ -108,20 +115,41 @@ $image = $user['image'];
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Name</th>
+                            <th>Product</th>
+                            <th>Time</th>
+                            <th>Customer Name</th>
+                            <th>Star</th>
+                            <th>Review</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($categories as $category): ?>
+                        <?php foreach ($comments as $item): ?>
                             <tr>
-                                <td><?php echo $category['id'] ?></td>
-                                <td><?php echo $category['name'] ?></td>
-                                <td style="display: flex; align-items: center">
-                                    <a href="./edit.php?id=<?php echo $category['id'] ?>" class="btn btn-warning">Edit</a>
+                                <td><?php echo $item['id'] ?></td>
+                                <td>
+                                    <a style="color: #000" target="_blank" href="/detail.php?id=<?php echo $item['product_id'] ?>">
+                                        <?php
+                                            $productDetail = $product->readById($item['product_id']);
+                                            $productDetail = mysqli_fetch_object($productDetail);
+                                            echo $productDetail->name;
+                                        ?>
+                                    </a>
+                                </td>
+                                <td><?php echo $item['time'] ?></td>
+                                <td><?php echo $item['customer_name'] ?></td>
+                                <td><?php echo $item['star'] ?></td>
+                                <td><?php echo $item['review'] ?></td>
+                                <td><?php echo $item['status'] == 0 ? 'Block' : 'Open' ?></td>
+                                <td>
                                     <form method="post">
-                                        <input type="hidden" name="id" value="<?php echo $category['id'] ?>">&nbsp;
-                                        <button onclick="return confirm('Do you want delete ?')" type="submit" name="deleteCategory" class="btn btn-danger">Delete</button>
+                                        <input type="hidden" name="review_id" value="<?php echo $item['id'] ?>">
+                                        <?php if ($item['status'] == 1): ?>
+                                            <input type="submit" name="block" value="Block" class="btn btn-danger">
+                                        <?php else: ?>
+                                            <input type="submit" name="open" value="Open" class="btn btn-success">
+                                        <?php endif; ?>
                                     </form>
                                 </td>
                             </tr>

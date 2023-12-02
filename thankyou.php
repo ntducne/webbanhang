@@ -1,3 +1,11 @@
+<?php 
+    $order_code = $_GET['order_code'];
+    if(!isset($order_code)){
+        header("Location: /");
+    }
+?>
+
+
 <!-- /*
 * Bootstrap 5
 * Template Name: Furni
@@ -23,7 +31,20 @@
         <link href="/css/tiny-slider.css" rel="stylesheet">
         <link href="/css/style.css" rel="stylesheet">
         <title>CQ Store</title>
-    </head>
+    <style lang="">
+        .dropdown {
+            margin-top: 9px;
+            height: 30px !important;
+        }
+        .dropdown-toggle {
+            background: transparent !important;
+            border: none !important;
+        }
+        .dropdown-toggle::after {
+            display: none !important; 
+        }
+    </style>
+</head>
 
     <body>
 
@@ -47,6 +68,7 @@
                         <!--                <li><a class="nav-link" href="services.php">Services</a></li>-->
                         <!--                <li><a class="nav-link" href="blog.php">Blog</a></li>-->
                         <li><a class="nav-link" href="/contact.php">Contact us</a></li>
+                        <li><a href="/check_order.php" class="nav-link">Check Order</a></li>
                     </ul>
 
                     <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
@@ -72,6 +94,7 @@
                 </span>
                 <h2 class="display-3 text-black">Thank you!</h2>
                 <p class="lead mb-5">You order was successfuly completed.</p>
+                <p><a href="/check_order.php?order_code=<?php echo $order_code; ?>" class="btn btn-sm btn-outline-black">Check Order</a></p>
                 <p><a href="/shop.php" class="btn btn-sm btn-outline-black">Back to shop</a></p>
                 </div>
             </div>

@@ -45,6 +45,19 @@
     <link href="../assets/css/custom.css" rel="stylesheet" />
     <!-- GOOGLE FONTS-->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+<style lang="">
+        .dropdown {
+            margin-top: 9px;
+            height: 30px !important;
+        }
+        .dropdown-toggle {
+            background: transparent !important;
+            border: none !important;
+        }
+        .dropdown-toggle::after {
+            display: none !important; 
+        }
+    </style>
 </head>
 <body>
 <div id="wrapper">
@@ -56,7 +69,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index.html">COMPANY NAME</a>
+            <a class="navbar-brand" href="/admin/">CQ Store</a>
         </div>
 
         <div class="header-right">
@@ -74,15 +87,9 @@
             <ul class="nav" id="main-menu">
                 <li>
                     <div class="user-img-div">
-                        <img src="../assets/img/user.png" class="img-thumbnail" />
-
-                        <div class="inner-text">
-                            Jhon Deo Alex
-                            <br />
-                            <small>Last Login : 2 Weeks Ago </small>
-                        </div>
+                        <img src="<?php echo $image ?>" class="img-thumbnail" />
+                        <div class="inner-text"><?php echo $name ?><br /></div>
                     </div>
-
                 </li>
 
 
@@ -91,6 +98,7 @@
                 <li><a href="/admin/product/">Product </a></li>
                 <li><a class="active-menu" href="/admin/user/">User </a></li>
                 <li><a href="/admin/order/">Order </a></li>
+<li><a href="/admin/review/">Review </a></li>
 
             </ul>
         </div>

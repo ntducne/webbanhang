@@ -3,6 +3,7 @@
     include 'control/product.php';
     include 'control/cart.php';
     include 'config/session.php';
+    include 'config/formatMoney.php';
     Session::init();
     $product = new Product();
     $products = $product->read();
@@ -59,6 +60,19 @@ if(isset($_POST['deleteItemCart'])){
     <link href="css/tiny-slider.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <title>CQ Store</title>
+<style lang="">
+        .dropdown {
+            margin-top: 9px;
+            height: 30px !important;
+        }
+        .dropdown-toggle {
+            background: transparent !important;
+            border: none !important;
+        }
+        .dropdown-toggle::after {
+            display: none !important; 
+        }
+    </style>
 </head>
 
 <body>
@@ -83,6 +97,7 @@ if(isset($_POST['deleteItemCart'])){
 <!--                <li><a class="nav-link" href="services.php">Services</a></li>-->
 <!--                <li><a class="nav-link" href="blog.php">Blog</a></li>-->
                 <li><a class="nav-link" href="contact.php">Contact us</a></li>
+                        <li><a href="check_order.php" class="nav-link">Check Order</a></li>
                 <li class="active"><a class="nav-link">Cart</a></li>
 
             </ul>
@@ -107,12 +122,28 @@ if(isset($_POST['deleteItemCart'])){
                 <?php
                     if(isset($_SESSION['authUser'])){
                         echo '
-                            <li><a class="nav-link" href="/profile.php"><img src="images/user.svg"></a></li>
+                            <div class="btn-group">
+                                <button class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="images/user.svg">
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item" href="/profile.php">Profile</a></li>
+                                    <li><a class="dropdown-item text-danger" href="/admin/logout.php">Logout</a></li>
+                                </ul>
+                            </div>
                         '; 
                     }
                     else {
                         echo '
-                            <li><a class="nav-link" href="/auth/login.php"><img src="images/user.svg"></a></li>
+                            <div class="btn-group">
+                                <button class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="images/user.svg">
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item" href="/auth/login.php">Login</a></li>
+                                    <li><a class="dropdown-item" href="/auth/register.php">Register</a></li>
+                                </ul>
+                            </div>
                         ';
                     }
                 ?>
@@ -169,7 +200,7 @@ if(isset($_POST['deleteItemCart'])){
                                 <td class="product-name">
                                     <h2 class="h5 text-black"><?php echo $value['name_prd'] ?></h2>
                                 </td>
-                                <td><?php echo $value['price_prd'] ?></td>
+                                <td><?php echo formatMoneyVN($value['price_prd']) ?></td>
                                 <td>
                                     <div class="input-group mb-3 d-flex justify-content-start align-items-center quantity-container mx-auto" style="max-width: 120px;">
                                         <div class="input-group-prepend">
@@ -181,7 +212,7 @@ if(isset($_POST['deleteItemCart'])){
                                         </div>
                                     </div>
                                 </td>
-                                <td><?php echo $value['price_prd'] * $value['quantity_prd'] ?></td>
+                                <td><?php echo formatMoneyVN($value['price_prd'] * $value['quantity_prd']) ?></td>
                                 <td>
                                     <input type="hidden" name="itemDelete" value="<?php echo $value['id_prd'] ?>">
                                     <input type="submit" class="btn btn-black btn-sm" value="X" name="deleteItemCart">
@@ -235,7 +266,7 @@ if(isset($_POST['deleteItemCart'])){
                                             foreach($arrCart as $key => $value){
                                                 $total += $value['price_prd'] * $value['quantity_prd'];
                                             }
-                                            echo $total;
+                                            echo formatMoneyVN($total);
                                         ?>
                                     </strong>
                                 </div>

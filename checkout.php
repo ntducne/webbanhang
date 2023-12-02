@@ -4,7 +4,13 @@
     include 'control/cart.php';
     include 'control/order.php';
     include 'config/session.php';
+    include 'config/formatMoney.php';
+
     Session::init();
+
+    $user = Session::get('authUser');
+    $user_id = $user['id'] ?? null;
+
     $product = new Product();
     $products = $product->read();
     $cart = new Cart();
@@ -33,7 +39,7 @@
         }
         $order_total = $order_total + 50000;
         $order_code = time();
-        $orderSuccess = $order->create($order_code, $customer_name, $customer_addresss, $customer_email, $customer_phone, $order_note, $payment_method, $order_status, $order_date, $order_total);
+        $orderSuccess = $order->create($user_id, $order_code, $customer_name, $customer_addresss, $customer_email, $customer_phone, $order_note, $payment_method, $order_status, $order_date, $order_total);
         $orderID = $order->readByOrderCode($order_code);
         $orderID = mysqli_fetch_assoc($orderID);
         foreach($arrCart as $key => $value) {
@@ -73,6 +79,19 @@
     <link href="css/tiny-slider.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <title>CQ Store</title>
+<style lang="">
+        .dropdown {
+            margin-top: 9px;
+            height: 30px !important;
+        }
+        .dropdown-toggle {
+            background: transparent !important;
+            border: none !important;
+        }
+        .dropdown-toggle::after {
+            display: none !important; 
+        }
+    </style>
 </head>
 
 <body>
@@ -81,7 +100,7 @@
 <nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
 
     <div class="container">
-        <a class="navbar-brand" href="index.php">Furni<span>.</span></a>
+        <a class="navbar-brand" href="/">Furni<span>.</span></a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -90,13 +109,14 @@
         <div class="collapse navbar-collapse" id="navbarsFurni">
             <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
                 <li class="nav-item ">
-                    <a class="nav-link" href="index.php">Home</a>
+                    <a class="nav-link" href="/">Home</a>
                 </li>
                 <li><a class="nav-link" href="shop.php">Shop</a></li>
                 <li><a class="nav-link" href="about.php">About us</a></li>
 <!--                <li><a class="nav-link" href="services.php">Services</a></li>-->
 <!--                <li><a class="nav-link" href="blog.php">Blog</a></li>-->
                 <li><a class="nav-link" href="contact.php">Contact us</a></li>
+                        <li><a href="check_order.php" class="nav-link">Check Order</a></li>
                 <li class="active"><a class="nav-link">Checkout</a></li>
 
             </ul>
@@ -121,12 +141,28 @@
                 <?php
                     if(isset($_SESSION['authUser'])){
                         echo '
-                            <li><a class="nav-link" href="/profile.php"><img src="images/user.svg"></a></li>
+                            <div class="btn-group">
+                                <button class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="images/user.svg">
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item" href="/profile.php">Profile</a></li>
+                                    <li><a class="dropdown-item text-danger" href="/admin/logout.php">Logout</a></li>
+                                </ul>
+                            </div>
                         '; 
                     }
                     else {
                         echo '
-                            <li><a class="nav-link" href="/auth/login.php"><img src="images/user.svg"></a></li>
+                            <div class="btn-group">
+                                <button class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="images/user.svg">
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item" href="/auth/login.php">Login</a></li>
+                                    <li><a class="dropdown-item" href="/auth/register.php">Register</a></li>
+                                </ul>
+                            </div>
                         ';
                     }
                 ?>
@@ -172,23 +208,23 @@
                     <div class="form-group row mb-3">
                         <div class="col-md-12">
                             <label for="customer_name" class="text-black">Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="customer_name" name="customer_name" placeholder="Full name">
+                            <input type="text" class="form-control" id="customer_name" name="customer_name" placeholder="Full name" value="<?php echo $user['name'] ?? '' ?>">
                         </div>
                     </div>
                     <div class="form-group row mb-3">
                         <div class="col-md-12">
                             <label for="customer_addresss" class="text-black">Address <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="customer_addresss" name="customer_addresss" placeholder="Address">
+                            <input type="text" class="form-control" id="customer_addresss" name="customer_addresss" placeholder="Address" value="<?php echo $user['address'] ?? '' ?>">
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class="col-md-6 mb-3">
                             <label for="customer_email" class="text-black">Email Address <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="customer_email" name="customer_email">
+                            <input type="text" class="form-control" id="customer_email" name="customer_email" value="<?php echo $user['email'] ?? '' ?>">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="customer_phone" class="text-black">Phone <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="customer_phone" name="customer_phone" placeholder="Phone Number">
+                            <input type="text" class="form-control" id="customer_phone" name="customer_phone" placeholder="Phone Number" value="<?php echo $user['phone'] ?? '' ?>">
                         </div>
                     </div>
                     <div class="form-group">
@@ -215,7 +251,7 @@
                                             echo '
                                                 <tr>
                                                     <td><img width="50" class="rounded" src="/uploads/'.$value['image_prd'].'"/> '.$value['name_prd'].' <strong class="mx-2">x</strong> '.$value['quantity_prd'].'</td>
-                                                    <td>'.$value['price_prd'] * $value['quantity_prd'].' VNĐ</td>
+                                                    <td>'.formatMoneyVN($value['price_prd'] * $value['quantity_prd']).'</td>
                                                 </tr>';
                                         }
                                     ?>

@@ -45,7 +45,20 @@
         <link href="/css/tiny-slider.css" rel="stylesheet">
         <link href="/css/style.css" rel="stylesheet">
         <title>CQ Store</title>
-    </head>
+    <style lang="">
+        .dropdown {
+            margin-top: 9px;
+            height: 30px !important;
+        }
+        .dropdown-toggle {
+            background: transparent !important;
+            border: none !important;
+        }
+        .dropdown-toggle::after {
+            display: none !important; 
+        }
+    </style>
+</head>
 
     <body>
 
@@ -69,6 +82,7 @@
                         <!--                <li><a class="nav-link" href="services.php">Services</a></li>-->
                         <!--                <li><a class="nav-link" href="blog.php">Blog</a></li>-->
                         <li><a class="nav-link" href="/contact.php">Contact us</a></li>
+                        <li><a href="/check_order.php" class="nav-link">Check Order</a></li>
                         <li class="active"><a class="nav-link">Reset Password</a></li>
 
                     </ul>
@@ -90,7 +104,7 @@
                             </span>
                             </a>
                         </li>
-                        <li><a class="nav-link" href="/auth/register.php"><img src="/images/user.svg"></a></li>
+                        <!-- <li><a class="nav-link" href="/auth/register.php"><img src="/images/user.svg"></a></li> -->
 
                     </ul>
                 </div>

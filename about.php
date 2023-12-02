@@ -27,6 +27,19 @@
     <link href="css/tiny-slider.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <title>CQ Store</title>
+<style lang="">
+        .dropdown {
+            margin-top: 9px;
+            height: 30px !important;
+        }
+        .dropdown-toggle {
+            background: transparent !important;
+            border: none !important;
+        }
+        .dropdown-toggle::after {
+            display: none !important; 
+        }
+    </style>
 </head>
 
 <body>
@@ -51,6 +64,7 @@
 <!--                <li><a class="nav-link" href="services.php">Services</a></li>-->
 <!--                <li><a class="nav-link" href="blog.php">Blog</a></li>-->
                 <li><a class="nav-link" href="contact.php">Contact us</a></li>
+                        <li><a href="check_order.php" class="nav-link">Check Order</a></li>
             </ul>
 
             <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
@@ -73,12 +87,28 @@
                 <?php
                     if(isset($_SESSION['authUser'])){
                         echo '
-                            <li><a class="nav-link" href="/profile.php"><img src="images/user.svg"></a></li>
+                            <div class="btn-group">
+                                <button class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="images/user.svg">
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item" href="/profile.php">Profile</a></li>
+                                    <li><a class="dropdown-item text-danger" href="/admin/logout.php">Logout</a></li>
+                                </ul>
+                            </div>
                         '; 
                     }
                     else {
                         echo '
-                            <li><a class="nav-link" href="/auth/login.php"><img src="images/user.svg"></a></li>
+                            <div class="btn-group">
+                                <button class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="images/user.svg">
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item" href="/auth/login.php">Login</a></li>
+                                    <li><a class="dropdown-item" href="/auth/register.php">Register</a></li>
+                                </ul>
+                            </div>
                         ';
                     }
                 ?>

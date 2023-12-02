@@ -6,6 +6,7 @@
     include 'config/connect.php';
     include 'control/product.php';
     include 'control/cart.php';
+    include 'config/formatMoney.php';
     $product = new Product();
     $products = $product->read();
     $cart = new Cart();
@@ -17,6 +18,7 @@
         $quantity = $_POST['quantity'];
         $cart->add($id, $name, $price, $image, $quantity);
         echo '<script>alert("Product added to cart successfully")</script>';
+        header('location: /shop.php');
     }
 ?>
 
@@ -44,6 +46,19 @@
     <link href="css/tiny-slider.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <title>CQ Store</title>
+<style lang="">
+        .dropdown {
+            margin-top: 9px;
+            height: 30px !important;
+        }
+        .dropdown-toggle {
+            background: transparent !important;
+            border: none !important;
+        }
+        .dropdown-toggle::after {
+            display: none !important; 
+        }
+    </style>
 </head>
 
 <body>
@@ -68,6 +83,7 @@
 <!--                <li><a class="nav-link" href="services.php">Services</a></li>-->
 <!--                <li><a class="nav-link" href="blog.php">Blog</a></li>-->
                 <li><a class="nav-link" href="contact.php">Contact us</a></li>
+                        <li><a href="check_order.php" class="nav-link">Check Order</a></li>
             </ul>
 
             <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
@@ -90,12 +106,28 @@
                 <?php
                     if(isset($_SESSION['authUser'])){
                         echo '
-                            <li><a class="nav-link" href="/profile.php"><img src="images/user.svg"></a></li>
+                            <div class="btn-group">
+                                <button class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="images/user.svg">
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item" href="/profile.php">Profile</a></li>
+                                    <li><a class="dropdown-item text-danger" href="/admin/logout.php">Logout</a></li>
+                                </ul>
+                            </div>
                         '; 
                     }
                     else {
                         echo '
-                            <li><a class="nav-link" href="/auth/login.php"><img src="images/user.svg"></a></li>
+                            <div class="btn-group">
+                                <button class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="images/user.svg">
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item" href="/auth/login.php">Login</a></li>
+                                    <li><a class="dropdown-item" href="/auth/register.php">Register</a></li>
+                                </ul>
+                            </div>
                         ';
                     }
                 ?>
@@ -138,7 +170,7 @@
                     <a href="detail.php?id=<?php echo $product['id'] ?>" style="text-decoration: none">
                         <img src="/uploads/<?php echo $product['image'] ?>" class="img-fluid product-thumbnail">
                         <h3 class="product-title"><?php echo $product['name'] ?></h3>
-                        <strong class="product-price"><?php echo $product['price'] ?></strong>
+                        <strong class="product-price"><?php echo formatMoneyVN($product['price']) ?></strong>
                     </a>
                     <form method="post">
                         <input type="hidden" name="id" value="<?php echo $product['id'] ?>">
