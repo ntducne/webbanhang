@@ -51,7 +51,8 @@
             $order_detail = $order->addOrderDetail($order_id, $product_id, $product_name, $product_quantity, $product_price);
         }
         unset($_SESSION['cart']);
-        header('location:/thankyou.php');
+        echo "<script>alert('Order success')</script>";
+        header("Location: ./thankyou.php?order_code=$order_code");
     }
 ?>
 

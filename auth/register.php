@@ -12,6 +12,7 @@
         $auth = new Auth();
         $register = $auth->register($name, $username, $email, $phone, $password);
         if($register){
+            echo "<script>alert('Register success')</script>";
             header("Location: /auth/login.php");
         }else{
             echo "Register failed";

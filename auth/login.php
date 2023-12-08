@@ -20,9 +20,10 @@
                 'username' => $login['username'],
                 'role' => $login['role'],
             ]);
+            echo "<script>alert('Login success')</script>";
             header('location: /');
         }
-        else{
+        else {
             echo "<script>alert('Username or password is incorrect')</script>";
         }
     }
@@ -35,8 +36,8 @@
 * Template URI: https://untree.co/
 * License: https://creativecommons.org/licenses/by/3.0/
 */ -->
-<!doctype php>
-<php lang="en">
+<!doctype html>
+<html lang="en">
 
     <head>
         <meta charset="utf-8">
@@ -284,4 +285,4 @@
         <script src="/js/custom.js"></script>
     </body>
 
-</php>
+</html>

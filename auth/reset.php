@@ -10,12 +10,14 @@
     $user = $auth->checkUsername($username);
     $userForgot = mysqli_fetch_object($user);
     if(!$userForgot){
+
         header("Location: /auth/forgot.php");
     }
 
     if(isset($_POST['reset'])){
         $newPassword = $_POST['newPassword'];
         $auth->changePassword($username, $newPassword);
+        echo "<script>alert('Reset password success')</script>";
         header("Location: /auth/login.php");
     }
 ?>

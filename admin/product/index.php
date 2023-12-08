@@ -21,6 +21,10 @@ if (isset($_POST['deleteProduct'])) {
 
     // get item cart
     $cart = Session::get('cart');
+    if(!$cart) {
+        Session::set('cart', []);
+        header('Location: ./index.php');
+    }
     $cart = array_filter($cart, function ($item) use ($id) {
         return $item['id_prd'] != $id;
     });
@@ -99,7 +103,7 @@ if (isset($_POST['deleteProduct'])) {
                 <li><a class="active-menu" href="/admin/product/">Product </a></li>
                 <li><a href="/admin/user/">User </a></li>
                 <li><a href="/admin/order/">Order </a></li>
-<li><a href="/admin/review/">Review </a></li>
+
 
             </ul>
         </div>

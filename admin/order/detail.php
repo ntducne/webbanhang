@@ -124,7 +124,7 @@
                     <li><a href="/admin/product/">Product </a></li>
                     <li><a href="/admin/user/">User </a></li>
                     <li><a class="active-menu" href="/admin/order/">Order </a></li>
-                    <li><a href="/admin/review/">Review </a></li>
+                    
 
                 </ul>
             </div>
