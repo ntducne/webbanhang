@@ -1,17 +1,7 @@
 <?php
     session_start();
-    include 'config/cart.php';
-    $cart = new Cart();
-    if(isset($_POST['action']) && $_POST['action'] == 'add'){
-        $id = $_POST['id'];
-        $name = $_POST['name'];
-        $price = $_POST['price'];
-        $image = $_POST['image'];
-        $quantity = $_POST['quantity'];
-        $cart->add($id, $name, $price, $image, $quantity);
-        echo '<script>alert("Product added to cart")</script>';
-        header('Location: /furi');
-    }
+    include 'config/formatMoney.php';
+
 ?>
 
 
@@ -164,7 +154,7 @@
                 <p><a href="shop.php" class="btn">Explore</a></p>
             </div>
             <?php 
-            include 'config/formatMoney.php';
+            
             include 'control.php';
             $product = new Data();
             $products = $product->select_product();
@@ -194,8 +184,21 @@
                 </div>
             </div>
             <!-- End Column 2 -->
-            <?php } ?>
-
+            <?php }
+                include 'config/cart.php';
+                $cart = new Cart();
+                if(isset($_POST['action']) && $_POST['action'] == 'add'){
+                    $id = $_POST['id'];
+                    $name = $_POST['name'];
+                    $price = $_POST['price'];
+                    $image = $_POST['image'];
+                    $quantity = $_POST['quantity'];
+                    $cart->add($id, $name, $price, $image, $quantity);
+                    echo '<script>alert("Product added to cart")</script>';
+                    header('Location: /furi');
+                }
+                
+                ?>
 
         </div>
     </div>

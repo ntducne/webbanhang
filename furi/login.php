@@ -1,7 +1,6 @@
 <?php 
     session_start();
     ob_start();
-
 ?>
 <!-- /*
 * Bootstrap 5
@@ -138,34 +137,34 @@
                                         </form>
 
                                         <?php
-                                        include 'control.php';
+                                            include 'control.php';
 
-                                        if(isset($_SESSION['authUser'])){
-                                            header('location: index.php');
-                                        }
-
-                                        if (isset($_POST['login'])) {
-                                            $username = $_POST['username'];
-                                            $password = $_POST['password'];
-                                            $auth = new Data();
-                                            $login = mysqli_fetch_array($auth->login($username, $password));
-                                            if ($login) {
-                                                $_SESSION['authUser'] = [
-                                                    'id' => $login['id'],
-                                                    'image' => $login['image'],
-                                                    'name' => $login['name'],
-                                                    'email' => $login['email'],
-                                                    'phone' => $login['phone'],
-                                                    'address' => $login['address'],
-                                                    'username' => $login['username'],
-                                                    'role' => $login['role'],
-                                                ];
-                                                echo "<script>alert('Login success')</script>";
+                                            if(isset($_SESSION['authUser'])){
                                                 header('location: index.php');
-                                            } else {
-                                                echo "<script>alert('Username or password is incorrect')</script>";
                                             }
-                                        }
+
+                                            if (isset($_POST['login'])) {
+                                                $username = $_POST['username'];
+                                                $password = $_POST['password'];
+                                                $auth = new Data();
+                                                $login = mysqli_fetch_array($auth->login($username, $password));
+                                                if ($login) {
+                                                    $_SESSION['authUser'] = [
+                                                        'id' => $login['id'],
+                                                        'image' => $login['image'],
+                                                        'name' => $login['name'],
+                                                        'email' => $login['email'],
+                                                        'phone' => $login['phone'],
+                                                        'address' => $login['address'],
+                                                        'username' => $login['username'],
+                                                        'role' => $login['role'],
+                                                    ];
+                                                    echo "<script>alert('Login success')</script>";
+                                                    header('location: index.php');
+                                                } else {
+                                                    echo "<script>alert('Username or password is incorrect')</script>";
+                                                }
+                                            }
                                         ?>
                                     </div>
                                 </div>
