@@ -160,8 +160,8 @@
                                                     'username' => $login['username'],
                                                     'role' => $login['role'],
                                                 ];
-                                                // echo "<script>alert('Login success')</script>";
-                                                // header('location: index.php');
+                                                echo "<script>alert('Login success')</script>";
+                                                header('location: index.php');
                                             } else {
                                                 echo "<script>alert('Username or password is incorrect')</script>";
                                             }

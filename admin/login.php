@@ -10,7 +10,7 @@
         $auth = new Data();
         $login = mysqli_fetch_array($auth->login($username,$password));
         if($login){
-            Session::set('authUser',[
+            $_SESSION['authUser'] = [
                 'id' => $login['id'],
                 'image' => $login['image'],
                 'name' => $login['name'],
@@ -19,7 +19,8 @@
                 'address' => $login['address'],
                 'username' => $login['username'],
                 'role' => $login['role'],
-            ]);
+            ];
+            echo "<script>alert('Login success')</script>";
             header('location: index.php');
         }
         else{

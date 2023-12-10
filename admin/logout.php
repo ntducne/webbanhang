@@ -1,6 +1,4 @@
 <?php
-
-include "../config/session.php";
-Session::checkSession();
+session_start();
 session_destroy();
 
