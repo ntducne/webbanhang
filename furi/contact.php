@@ -217,22 +217,7 @@
                         <input type="submit" name="action" value="Send Message"  class="btn btn-primary-hover-outline">
                         <!-- <button type="submit" class="btn btn-primary-hover-outline">Send Message</button> -->
                     </form>
-                    <?php
-                        include 'config/session.php';
-                        Session::init();
-                        include 'config/connect.php';
-                        include 'control/contact.php';  
-                        $contact = new Contact();
-                        
-                        if(isset($_POST['action'])){
-                            $fname = $_POST['first_name'];
-                            $lname = $_POST['last_name'];
-                            $email = $_POST['email'];
-                            $message = $_POST['message'];
-                            $contact->create($fname, $lname, $email, $message);
-                            echo "<script>alert('Your message has been sent!')</script>";
-                        }
-                    ?>
+                    
 
                 </div>
 
