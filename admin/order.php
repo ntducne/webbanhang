@@ -1,14 +1,17 @@
 <?php
     session_start();
-
-    if(!isset($_SESSION['authUser'])){
+    include "control.php";
+if(!isset($_SESSION['authUser'])){
         header('Location: /admin/login.php');
     }
     $user = $_SESSION['authUser'];
     $username = $user['username'];
     $name = $user['name'];
     $image = $user['image'];
+    $order = new Data();
+    $orders = $order->order_read();
 ?>
+
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -57,9 +60,9 @@
 
         <div class="header-right">
 
-<!--            <a href="message-task.html" class="btn btn-info" title="New Message"><b>30 </b><i class="fa fa-envelope-o fa-2x"></i></a>-->
-<!--            <a href="message-task.html" class="btn btn-primary" title="New Task"><b>40 </b><i class="fa fa-bars fa-2x"></i></a>-->
             <a href="/admin/logout.php" class="btn btn-danger" title="Logout"><i class="fa fa-exclamation-circle fa-2x"></i></a>
+
+
 
         </div>
     </nav>
@@ -67,30 +70,23 @@
     <nav class="navbar-default navbar-side" role="navigation">
         <div class="sidebar-collapse">
             <ul class="nav" id="main-menu">
-                <?php 
-$user = $_SESSION['authUser'];
-
-    $username = $user['username'];
-    $name = $user['name'];
-    $image = $user['image'];
-
-?>
-
-<li>
+                <li>
                     <div class="user-img-div">
                         <img src="/uploads/<?php echo $image ?>" class="img-thumbnail" />
                         <div class="inner-text"><?php echo $name ?><br /></div>
                     </div>
+
                 </li>
-                <li><a class="active-menu" href="/admin/">Dashboard</a></li>
+
+
+                <li><a href="/admin/">Dashboard</a></li>
                 <li><a href="/admin/category.php">Category </a></li>
                 <li><a href="/admin/product.php">Product </a></li>
                 <li><a href="/admin/user.php">User </a></li>
-                <li><a href="/admin/order.php">Order </a></li>
+                <li><a class="active-menu" href="/admin/order.php">Order </a></li>
                 
 
             </ul>
-
         </div>
 
     </nav>
@@ -99,10 +95,45 @@ $user = $_SESSION['authUser'];
         <div id="page-inner">
             <div class="row">
                 <div class="col-md-12">
-                    <h1 class="page-head-line">DASHBOARD</h1>
-                    <h1 class="page-subhead-line">This is dummy text , you can replace it with your original text. </h1>
-
+                    <h1 class="page-head-line">Order</h1>
+                    <!-- <h1 class="page-subhead-line"><a href="./create.php" class="btn btn-success">Create</a></h1> -->
                 </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Order Code</th>
+                            <th>Order Date</th>
+                            <th>Customer Name</th>
+                            <th>Customer Phone</th>
+                            <th>Customer Address</th>
+                            <th>Note</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($orders as $item): ?>
+                            <tr>
+                                <td><?php echo $item['id'] ?></td>
+                                <td><?php echo $item['order_code'] ?></td>
+                                <td><?php echo $item['order_date'] ?></td>
+                                <td><?php echo $item['customer_name'] ?></td>
+                                <td><?php echo $item['customer_phone'] ?></td>
+                                <td><?php echo $item['customer_address'] ?></td>
+                                <td><?php echo $item['note'] ?></td>
+                                <td><?php echo $item['total'] ?></td>
+                                <td><?php echo $item['status'] ?></td>
+                                <td>
+                                    <a href="order_detail.php?order_code=<?php echo $item['order_code'] ?>" class="btn btn-secondary">Detail</a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
         <!-- /. PAGE INNER  -->
@@ -110,7 +141,6 @@ $user = $_SESSION['authUser'];
     <!-- /. PAGE WRAPPER  -->
 </div>
 <!-- /. WRAPPER  -->
-
 <div id="footer-sec">
     &copy; 2014 YourCompany | Design By : <a href="http://www.binarytheme.com/" target="_blank">BinaryTheme.com</a>
 </div>
@@ -124,7 +154,6 @@ $user = $_SESSION['authUser'];
 <script src="assets/js/jquery.metisMenu.js"></script>
 <!-- CUSTOM SCRIPTS -->
 <script src="assets/js/custom.js"></script>
-
 
 
 </body>

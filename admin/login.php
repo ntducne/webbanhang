@@ -1,12 +1,13 @@
 <?php
-    include "../config/connect.php";
-    include "../config/session.php";
-    include "../control/auth.php";
-    Session::checkLogged();
+    include "control.php";
+    session_start();
+    if(isset($_SESSION['authUser'])){
+        header('Location: index.php');
+    }
     if(isset($_POST['login'])){
         $username = $_POST['username'];
         $password = $_POST['login'];
-        $auth = new Auth();
+        $auth = new Data();
         $login = mysqli_fetch_array($auth->login($username,$password));
         if($login){
             Session::set('authUser',[

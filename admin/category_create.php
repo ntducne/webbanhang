@@ -1,6 +1,6 @@
 <?php
+    include "control.php";
     session_start();
-
     if(!isset($_SESSION['authUser'])){
         header('Location: /admin/login.php');
     }
@@ -8,7 +8,14 @@
     $username = $user['username'];
     $name = $user['name'];
     $image = $user['image'];
+    $category = new Data();
+    if(isset($_POST['createCategory'])){
+        $name = $_POST['name'];
+        $category->category_create($name);
+        header('Location: category.php');
+    }
 ?>
+
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -56,10 +63,9 @@
         </div>
 
         <div class="header-right">
-
-<!--            <a href="message-task.html" class="btn btn-info" title="New Message"><b>30 </b><i class="fa fa-envelope-o fa-2x"></i></a>-->
-<!--            <a href="message-task.html" class="btn btn-primary" title="New Task"><b>40 </b><i class="fa fa-bars fa-2x"></i></a>-->
             <a href="/admin/logout.php" class="btn btn-danger" title="Logout"><i class="fa fa-exclamation-circle fa-2x"></i></a>
+
+
 
         </div>
     </nav>
@@ -67,30 +73,23 @@
     <nav class="navbar-default navbar-side" role="navigation">
         <div class="sidebar-collapse">
             <ul class="nav" id="main-menu">
-                <?php 
-$user = $_SESSION['authUser'];
-
-    $username = $user['username'];
-    $name = $user['name'];
-    $image = $user['image'];
-
-?>
-
-<li>
+                <li>
                     <div class="user-img-div">
                         <img src="/uploads/<?php echo $image ?>" class="img-thumbnail" />
                         <div class="inner-text"><?php echo $name ?><br /></div>
                     </div>
+
                 </li>
-                <li><a class="active-menu" href="/admin/">Dashboard</a></li>
-                <li><a href="/admin/category.php">Category </a></li>
+
+
+                <li><a  href="/admin/">Dashboard</a></li>
+                <li><a class="active-menu" href="/admin/category.php">Category </a></li>
                 <li><a href="/admin/product.php">Product </a></li>
                 <li><a href="/admin/user.php">User </a></li>
                 <li><a href="/admin/order.php">Order </a></li>
-                
+
 
             </ul>
-
         </div>
 
     </nav>
@@ -99,10 +98,17 @@ $user = $_SESSION['authUser'];
         <div id="page-inner">
             <div class="row">
                 <div class="col-md-12">
-                    <h1 class="page-head-line">DASHBOARD</h1>
-                    <h1 class="page-subhead-line">This is dummy text , you can replace it with your original text. </h1>
+                    <h1 class="page-head-line">Category Create</h1>
+                    <h1 class="page-subhead-line"><a href="category.php" class="btn btn-danger">Cancel</a></h1>
 
                 </div>
+            </div>
+            <div class="table-responsive">
+                <form method="post">
+                    <label for="">Name category</label>
+                    <input type="text" name="name" id="" class="form-control" style="margin-bottom: 10px">
+                    <input type="submit" value="Create" name="createCategory" class="btn btn-success">
+                </form>
             </div>
         </div>
         <!-- /. PAGE INNER  -->
@@ -110,7 +116,6 @@ $user = $_SESSION['authUser'];
     <!-- /. PAGE WRAPPER  -->
 </div>
 <!-- /. WRAPPER  -->
-
 <div id="footer-sec">
     &copy; 2014 YourCompany | Design By : <a href="http://www.binarytheme.com/" target="_blank">BinaryTheme.com</a>
 </div>
@@ -124,7 +129,6 @@ $user = $_SESSION['authUser'];
 <script src="assets/js/jquery.metisMenu.js"></script>
 <!-- CUSTOM SCRIPTS -->
 <script src="assets/js/custom.js"></script>
-
 
 
 </body>
