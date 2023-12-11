@@ -1,5 +1,6 @@
 <?php
     session_start();
+    ob_start();
     include 'config/formatMoney.php';
    
 ?>
@@ -49,7 +50,7 @@
 <nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
 
     <div class="container">
-        <a class="navbar-brand" href="/">Furni<span>.</span></a>
+        <a class="navbar-brand" href="index.php">Furni<span>.</span></a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -58,7 +59,7 @@
         <div class="collapse navbar-collapse" id="navbarsFurni">
             <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
                 <li class="nav-item ">
-                    <a class="nav-link" href="/furi">Home</a>
+                    <a class="nav-link" href="index.php">Home</a>
                 </li>
                 <li class="active"><a class="nav-link" href="shop.php">Shop</a></li>
                 <li><a class="nav-link" href="about.php">About us</a></li>
@@ -155,7 +156,7 @@
             <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
                 <div class="product-item">
                     <a href="order.php?id=<?php echo $product['id'] ?>" style="text-decoration: none">
-                        <img src="/uploads/<?php echo $product['image'] ?>" class="img-fluid product-thumbnail">
+                        <img src="../uploads/<?php echo $product['image'] ?>" class="img-fluid product-thumbnail">
                         <h3 class="product-title"><?php echo $product['name'] ?></h3>
                         <strong class="product-price"><?php echo formatMoneyVN($product['price']) ?></strong>
                     </a>
@@ -184,7 +185,7 @@
                     $quantity = $_POST['quantity'];
                     $cart->add($id, $name, $price, $image, $quantity);
                     echo '<script>alert("Product added to cart ")</script>';
-                    header('Location: /furi');
+                    header('Location: index.php');
                 }
             ?>
 

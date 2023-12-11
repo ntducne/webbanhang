@@ -121,7 +121,7 @@
         <nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar" style="background-color: #3b5d50 !important;">
 
             <div class="container">
-                <a class="navbar-brand" href="/">Furni<span>.</span></a>
+                <a class="navbar-brand" href="index.php">Furni<span>.</span></a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -130,7 +130,7 @@
                 <div class="collapse navbar-collapse" id="navbarsFurni">
                     <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
                         <li class="nav-item">
-                            <a class="nav-link" href="/furi">Home</a>
+                            <a class="nav-link" href="index.php">Home</a>
                         </li>
                         <li><a class="nav-link" href="shop.php">Shop</a></li>
                         <li><a class="nav-link" href="about.php">About us</a></li>
@@ -209,7 +209,7 @@
                                                     <td class="border-gray-200"><?php echo $value['order_code'] ?></td>
                                                     <td class="border-gray-200"><?php echo $value['order_date'] ?></td>
                                                     <td class="border-gray-200"><?php echo formatMoneyVN($value['total']) ?></td>
-                                                    <td class="border-gray-200"><?php echo renderStatusOrder($value['status']) ?></td>
+                                                    <td class="border-gray-200"><?php echo $value['status'] ?></td>
                                                     <td class="border-gray-200 d-flex">
                                                         <!-- Button trigger modal -->
                                                         <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal<?php echo $value['order_code'] ?>">
@@ -288,7 +288,7 @@
                                     <div class="card-header">Profile Picture</div>
                                     <div class="card-body text-center">
                                         <!-- Profile picture image-->
-                                        <img class="img-account-profile rounded-circle mb-2 w-100" src="/uploads/<?php echo $user['image'] ?>" alt="">
+                                        <img class="img-account-profile rounded-circle mb-2 w-100" src="../uploads/<?php echo $user['image'] ?>" alt="">
                                         <!-- Profile picture help block-->
                                         <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
                                         <!-- Profile picture upload button-->

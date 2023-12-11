@@ -79,7 +79,7 @@ if(isset($_POST['deleteItemCart'])){
 <nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
 
     <div class="container">
-        <a class="navbar-brand" href="/">Furni<span>.</span></a>
+        <a class="navbar-brand" href="index.php">Furni<span>.</span></a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -88,7 +88,7 @@ if(isset($_POST['deleteItemCart'])){
         <div class="collapse navbar-collapse" id="navbarsFurni">
             <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
                 <li class="nav-item ">
-                    <a class="nav-link" href="/furi">Home</a>
+                    <a class="nav-link" href="index.php">Home</a>
                 </li>
                 <li><a class="nav-link" href="shop.php">Shop</a></li>
                 <li><a class="nav-link" href="about.php">About us</a></li>
@@ -193,7 +193,7 @@ if(isset($_POST['deleteItemCart'])){
                             <input type="hidden" name="id_prd[]" value="<?php echo $value['id_prd'] ?>">
                             <tr>
                                 <td class="product-thumbnail">
-                                    <img src="/uploads/<?php echo $value['image_prd'] ?>" alt="Image" class="img-fluid">
+                                    <img src="../uploads/<?php echo $value['image_prd'] ?>" alt="Image" class="img-fluid">
                                 </td>
                                 <td class="product-name">
                                     <h2 class="h5 text-black"><?php echo $value['name_prd'] ?></h2>

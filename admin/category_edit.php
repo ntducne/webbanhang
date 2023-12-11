@@ -53,11 +53,11 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/admin/">CQ Store</a>
+            <a class="navbar-brand" href="./">CQ Store</a>
         </div>
 
         <div class="header-right">
-            <a href="/admin/logout.php" class="btn btn-danger" title="Logout"><i class="fa fa-exclamation-circle fa-2x"></i></a>
+            <a href="./logout.php" class="btn btn-danger" title="Logout"><i class="fa fa-exclamation-circle fa-2x"></i></a>
 
 
 
@@ -78,18 +78,18 @@ $user = $_SESSION['authUser'];
 
                 <li>
                     <div class="user-img-div">
-                        <img src="/uploads/<?php echo $image ?>" class="img-thumbnail" />
+                        <img src="../uploads/<?php echo $image ?>" class="img-thumbnail" />
                         <div class="inner-text"><?php echo $name ?><br /></div>
                     </div>
 
                 </li>
 
 
-                <li><a  href="/admin/">Dashboard</a></li>
-                <li><a class="active-menu" href="/admin/category.php">Category </a></li>
-                <li><a href="/admin/product.php">Product </a></li>
-                <li><a href="/admin/user.php">User </a></li>
-                <li><a href="/admin/order.php">Order </a></li>
+                <li><a  href="./">Dashboard</a></li>
+                <li><a class="active-menu" href="./category.php">Category </a></li>
+                <li><a href="./product.php">Product </a></li>
+                <li><a href="./user.php">User </a></li>
+                <li><a href="./order.php">Order </a></li>
 
 
             </ul>

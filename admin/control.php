@@ -45,9 +45,9 @@ class Data {
     }
 
 
-    public function product_create($name, $description, $price, $image, $category_id, $status) {
+    public function product_create($name, $description, $price, $image, $category_id, $total_product, $status) {
         global $conn;
-        $insert="insert into products(name, description, price, image, category_id, status) values ('$name', '$description', '$price', '$image', '$category_id', '$status')";
+        $insert="insert into products(name, description, price, image, category_id, status) values ('$name', '$description', '$price', '$image', '$category_id', '$total_product',  '$status')";
         return mysqli_query ($conn,$insert);
     }
 
@@ -63,9 +63,9 @@ class Data {
         return mysqli_query ($conn,$select);
     }
 
-    public function product_update($id, $name, $description, $price, $image, $category_id, $status) {
+    public function product_update($id, $name, $description, $price, $image, $category_id, $total_product, $status) {
         global $conn;
-        $update="update products set name='$name', description='$description', price='$price', image='$image', category_id='$category_id', status='$status' where id='$id'";
+        $update="update products set name='$name', description='$description', price='$price', image='$image', category_id='$category_id', total_product='$total_product' ,status='$status' where id='$id'";
         return mysqli_query ($conn,$update);
     }
 

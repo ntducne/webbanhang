@@ -75,14 +75,12 @@ if (isset($_POST['deleteUser'])) {
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/admin/">CQ Store</a>
+                <a class="navbar-brand" href="./">CQ Store</a>
             </div>
 
             <div class="header-right">
 
-                <a href="message-task.html" class="btn btn-info" title="New Message"><b>30 </b><i class="fa fa-envelope-o fa-2x"></i></a>
-                <a href="message-task.html" class="btn btn-primary" title="New Task"><b>40 </b><i class="fa fa-bars fa-2x"></i></a>
-                <a href="login.html" class="btn btn-danger" title="Logout"><i class="fa fa-exclamation-circle fa-2x"></i></a>
+                <a href="logout.php" class="btn btn-danger" title="Logout"><i class="fa fa-exclamation-circle fa-2x"></i></a>
 
 
             </div>
@@ -102,17 +100,17 @@ if (isset($_POST['deleteUser'])) {
 
                     <li>
                         <div class="user-img-div">
-                            <img src="/uploads/<?php echo $image ?>" class="img-thumbnail" />
+                            <img src="../uploads/<?php echo $image ?>" class="img-thumbnail" />
                             <div class="inner-text"><?php echo $name ?><br /></div>
                         </div>
                     </li>
 
 
-                    <li><a href="/admin/">Dashboard</a></li>
-                    <li><a href="/admin/category.php">Category </a></li>
-                    <li><a href="/admin/product.php">Product </a></li>
-                    <li><a class="active-menu" href="/admin/user.php">User </a></li>
-                    <li><a href="/admin/order.php">Order </a></li>
+                    <li><a href="./">Dashboard</a></li>
+                    <li><a href="./category.php">Category </a></li>
+                    <li><a href="./product.php">Product </a></li>
+                    <li><a class="active-menu" href="./user.php">User </a></li>
+                    <li><a href="./order.php">Order </a></li>
 
 
                 </ul>
@@ -145,7 +143,7 @@ if (isset($_POST['deleteUser'])) {
                             <?php foreach ($users as $value) : ?>
                                 <tr>
                                     <td><?php echo $value['id'] ?></td>
-                                    <td><img src="../uploads/<?php echo $value['image'] ?>" width="100px" height="100px" />
+                                    <td><img src="..../uploads/<?php echo $value['image'] ?>" width="100px" height="100px" />
                                     </td>
                                     <td><?php echo $value['name'] ?></td>
                                     <td><?php echo $value['username'] ?></td>
