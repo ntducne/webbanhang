@@ -179,7 +179,8 @@
                 $cart = new Cart();
                 if(isset($_POST['action']) && $_POST['action'] == 'add'){
                     $id = $_POST['id'];
-                    if($product->checkExitProduct($id) == 0){
+                    $itemData = new Data();
+                    if($itemData->checkExitProduct($id) == 0){
                         echo '<script>alert("Product is temporarily out of stock !")</script>';
                         header('Location: shop.php');
                     } else {

@@ -47,7 +47,7 @@ class Data {
 
     public function product_create($name, $description, $price, $image, $category_id, $total_product, $status) {
         global $conn;
-        $insert="insert into products(name, description, price, image, category_id, status) values ('$name', '$description', '$price', '$image', '$category_id', '$total_product',  '$status')";
+        $insert="insert into products(name, description, price, image, category_id, total_product, status) values ('$name', '$description', '$price', '$image', '$category_id', '$total_product',  '$status')";
         return mysqli_query ($conn,$insert);
     }
 

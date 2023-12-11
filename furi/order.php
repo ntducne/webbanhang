@@ -162,7 +162,7 @@
                 $id = $_GET['id'];
                 if($order->checkExitProduct($id) == 0){
                     echo '<script>alert("Product is temporarily out of stock !")</script>';
-                    header('Location: shop.php');
+                    echo '<script>window.location.href="shop.php"</script>';
                 }
                 else {
                     $product = $order->read_product_by_id($id);
@@ -240,7 +240,8 @@
                                     <tbody>
                                         <?php
                                         if(isset($_SESSION['cart'])){
-                                            $total = 0;
+                                            if(count($_SESSION['cart'])>0){
+                                                $total = 0;
                                             foreach($arrCart as $key => $value) {
                                                 $total += $value['price_prd'] * $value['quantity_prd'];
                                                 echo '
@@ -248,6 +249,15 @@
                                                         <td><img width="50" class="rounded" src="../uploads/'.$value['image_prd'].'"/> '.$value['name_prd'].' <strong class="mx-2">x</strong> '.$value['quantity_prd'].'</td>
                                                         <td>'.formatMoneyVN($value['price_prd'] * $value['quantity_prd']).'</td>
                                                     </tr>';
+                                            }
+                                            }
+                                            else {
+                                                echo '
+                                                    <tr>
+                                                        <td><img width="50" class="rounded" src="../uploads/'.$product['image_prd'].'"/> '.$product['name_prd'].' <strong class="mx-2">x</strong> '.$product['quantity_prd'].'</td>
+                                                        <td>'.formatMoneyVN($product['price_prd'] * $product['quantity_prd']).'</td>
+                                                    </tr>
+                                                ';
                                             }
                                         }
                                         else {
@@ -261,8 +271,6 @@
                                         ?>
                                     </tbody>
                                 </table>
-                                
-
                             </div>
                         </div>
                     </div>
@@ -356,7 +364,7 @@
                     unset($_SESSION['cart']);
                 }
                 echo "<script>alert('Order success')</script>";
-                echo '<script>window.location.href="thankyou.php?order_code=$order_code"</script>';
+                echo '<script>window.location.href="thankyou.php?order_code=' . $order_code . '";</script>';
             }
         ?>
     </div>

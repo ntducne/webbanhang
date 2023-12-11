@@ -81,13 +81,16 @@ class Data
             AND p.id = $product_id
             GROUP BY p.id, p.name, p.total_product ";
         $data = mysqli_query($conn, $sql);
-    
         if ($data->num_rows > 0) {
             $product = $data->fetch_assoc();
             $remaining_stock = $product['remaining_stock'];
             return $remaining_stock;
-        } else {
-            return 0;
+        } 
+        else {
+            $product = $this->read_product_by_id($product_id);
+            $product = $product->fetch_assoc();
+            $remaining_stock = $product['total_product'];
+            return $remaining_stock;
         }
     }
 }
