@@ -16,6 +16,11 @@ session_start();
             $orderDetail = $orderModel->getOrderDetail($order['id']);
         }
     }
+    else{
+        // alert 
+        echo '<script>alert("Please enter order code")</script>';
+        echo '<script>window.location.href="index.php"</script>';
+    }
     
 ?>
 

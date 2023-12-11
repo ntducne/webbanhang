@@ -3,7 +3,8 @@
     include "config/formatMoney.php";
     include "control.php";
     if(!isset($_SESSION['authUser'])) {
-        header("Location: /furi");
+        echo '<script>window.location.href="index.php"</script>';
+        
     }
     $user = $_SESSION['authUser'];
     $order = new Data();

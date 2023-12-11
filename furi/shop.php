@@ -179,13 +179,18 @@
                 $cart = new Cart();
                 if(isset($_POST['action']) && $_POST['action'] == 'add'){
                     $id = $_POST['id'];
-                    $name = $_POST['name'];
-                    $price = $_POST['price'];
-                    $image = $_POST['image'];
-                    $quantity = $_POST['quantity'];
-                    $cart->add($id, $name, $price, $image, $quantity);
-                    echo '<script>alert("Product added to cart ")</script>';
-                    header('Location: index.php');
+                    if($product->checkExitProduct($id) == 0){
+                        echo '<script>alert("Product is temporarily out of stock !")</script>';
+                        header('Location: shop.php');
+                    } else {
+                        $name = $_POST['name'];
+                        $price = $_POST['price'];
+                        $image = $_POST['image'];
+                        $quantity = $_POST['quantity'];
+                        $cart->add($id, $name, $price, $image, $quantity);
+                        echo '<script>alert("Product added to cart ")</script>';
+                        echo '<script>window.location.href="index.php"</script>';
+                    }
                 }
             ?>
 

@@ -2,7 +2,7 @@
     include "control.php";
     session_start();
     if(isset($_SESSION['authUser'])){
-        header('Location: index.php');
+        echo '<script>window.location.href="index.php"</script>';
     }
     if(isset($_POST['login'])){
         $username = $_POST['username'];
@@ -21,7 +21,7 @@
                 'role' => $login['role'],
             ];
             echo "<script>alert('Login success')</script>";
-            header('location: index.php');
+            echo '<script>window.location.href="index.php"</script>';
         }
         else{
             echo "<script>alert('Username or password is incorrect')</script>";

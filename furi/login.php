@@ -140,7 +140,7 @@
                                             include 'control.php';
 
                                             if(isset($_SESSION['authUser'])){
-                                                header('location: index.php');
+                                                echo '<script>window.location.href="index.php"</script>';
                                             }
 
                                             if (isset($_POST['login'])) {
@@ -160,7 +160,7 @@
                                                         'role' => $login['role'],
                                                     ];
                                                     echo "<script>alert('Login success')</script>";
-                                                    header('location: index.php');
+                                                    echo '<script>window.location.href="index.php"</script>';
                                                 } else {
                                                     echo "<script>alert('Username or password is incorrect')</script>";
                                                 }

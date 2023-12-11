@@ -127,7 +127,7 @@ session_start();
                         <th>Price</th>
                         <th>Description</th>
                         <th>Category</th>
-                        <th>Status</th>
+                        <th>Total Product</th>
                         <th>Action</th>
                     </tr>
                     </thead>
@@ -145,7 +145,7 @@ session_start();
                                 $categoryDetail = mysqli_fetch_object($categoryDetail);
                                 echo $categoryDetail->name;
                                 ?></td>
-                            <td><?php echo $product['status'] == 0 ? 'Inactive' : 'Active' ?></td>
+                            <td><?php echo $product['total_product']?></td>
                             <td style="display: flex; align-items: center">
                                 <a href="product_edit.php?id=<?php echo $product['id'] ?>" class="btn btn-warning">Edit</a>&nbsp;
                                 <form method="post">

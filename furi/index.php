@@ -156,9 +156,9 @@
             </div>
             <?php 
             
-            include 'control.php';
-            $product = new Data();
-            $products = $product->select_product();
+                include 'control.php';
+                $product = new Data();
+                $products = $product->select_product();
             ?>
             <!-- End Column 1 -->
             <?php foreach ($products as $product) { ?>
@@ -188,19 +188,24 @@
             <?php }
                 include 'config/cart.php';
                 $cart = new Cart();
+                $data = new Data();
+
                 if(isset($_POST['action']) && $_POST['action'] == 'add'){
                     $id = $_POST['id'];
-                    $name = $_POST['name'];
-                    $price = $_POST['price'];
-                    $image = $_POST['image'];
-                    $quantity = $_POST['quantity'];
-                    $cart->add($id, $name, $price, $image, $quantity);
-                    echo '<script>alert("Product added to cart")</script>';
-                    header('Location: index.php');
+                    if($data->checkExitProduct($id) == 0){
+                        echo '<script>alert("Product is temporarily out of stock !")</script>';
+                        echo '<script>window.location.href="index.php"</script>';
+                    }
+                    else {
+                        $name = $_POST['name'];
+                        $price = $_POST['price'];
+                        $image = $_POST['image'];
+                        $quantity = $_POST['quantity'];
+                        $cart->add($id, $name, $price, $image, $quantity);
+                        echo '<script>window.location.href="index.php"</script>';
+                    }
                 }
-                
                 ?>
-
         </div>
     </div>
 </div>

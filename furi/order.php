@@ -160,20 +160,26 @@
         
             if(isset($_GET['id'])){
                 $id = $_GET['id'];
-                $product = $order->read_product_by_id($id);
-                $product = mysqli_fetch_assoc($product);
-                $product_id = $product['id'];
-                $product_name = $product['name'];
-                $product_price = $product['price'];
-                $product_image = $product['image'];
-                $product_quantity = 1;
-                $product = [
-                    'id_prd' => $product_id,
-                    'name_prd' => $product_name,
-                    'price_prd' => $product_price,
-                    'image_prd' => $product_image,
-                    'quantity_prd' => $product_quantity
-                ];
+                if($order->checkExitProduct($id) == 0){
+                    echo '<script>alert("Product is temporarily out of stock !")</script>';
+                    header('Location: shop.php');
+                }
+                else {
+                    $product = $order->read_product_by_id($id);
+                    $product = mysqli_fetch_assoc($product);
+                    $product_id = $product['id'];
+                    $product_name = $product['name'];
+                    $product_price = $product['price'];
+                    $product_image = $product['image'];
+                    $product_quantity = 1;
+                    $product = [
+                        'id_prd' => $product_id,
+                        'name_prd' => $product_name,
+                        'price_prd' => $product_price,
+                        'image_prd' => $product_image,
+                        'quantity_prd' => $product_quantity
+                    ];
+                }
             }
         
             $arrCart = [];
@@ -183,7 +189,7 @@
                 }
             }
             if(count($arrCart) == 0 && !isset($product)){
-                header("Location: shop.php");
+                echo '<script>window.location.href="shop.php"</script>';
             }
         ?>
 
@@ -324,24 +330,35 @@
                 $orderID = $order->readByOrderCode($order_code);
                 $orderID = mysqli_fetch_assoc($orderID);
                 if(!isset($_SESSION['cart'])){
-                    $order->insert_order_detail($orderID['id'], $product['name_prd'], $product['quantity_prd'], $product['price_prd']);
+                    $data = new Data();
+                    if($data->checkExitProduct($product['id_prd']) == 0){
+                        echo '<script>alert("Product is temporarily out of stock !")</script>';
+                        echo '<script>window.location.href="shop.php"</script>';
+
+                        // header('Location: shop.php');
+                    }
+                    else {
+                        $order->insert_order_detail($product['id_prd'], $orderID['id'], $product['name_prd'], $product['quantity_prd'], $product['price_prd']);
+                    }
                 }
                 else {
                     foreach($arrCart as $key => $value) {
                         $order_id = $orderID['id'];
+                        $product = $value['id_prd'];
                         $product_name = $value['name_prd'];
                         $product_price = $value['price_prd'];
                         $product_quantity = $value['quantity_prd'];
-                        $order_detail = $order->insert_order_detail($order_id, $product_name, $product_quantity, $product_price);
+                        $data = new Data();
+                        if($data->checkExitProduct($product) >= 1){
+                            $order_detail = $order->insert_order_detail($product, $order_id, $product_name, $product_quantity, $product_price);
+                        }
                     }
                     unset($_SESSION['cart']);
                 }
                 echo "<script>alert('Order success')</script>";
-                header("Location: thankyou.php?order_code=$order_code");
+                echo '<script>window.location.href="thankyou.php?order_code=$order_code"</script>';
             }
-        
         ?>
-
     </div>
 </div>
 

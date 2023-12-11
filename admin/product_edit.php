@@ -139,6 +139,10 @@
                     <input type="text" name="price" class="form-control" placeholder="Price" value="<?php echo $productDetail->price ?>">
                     <br>
 
+                    <label for="">Total Product</label>
+                    <input type="text" name="total_product" class="form-control" placeholder="Total Product" value="<?php echo $productDetail->total_product ?>">
+                    <br>
+
                     <label for="">Category</label>
                     <select name="category_id" class="form-control">
                         <?php

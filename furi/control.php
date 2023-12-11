@@ -41,10 +41,10 @@ class Data
         return mysqli_query($conn, $insert);
     }
 
-    public function insert_order_detail($order_id, $name, $quantity, $price)
+    public function insert_order_detail($product_id, $order_id, $name, $quantity, $price)
     {
         global $conn;
-        $insert = "insert into order_details(order_id, name, quantity, price) values ('$order_id', '$name', '$quantity', '$price')";
+        $insert = "insert into order_details(order_id, name, quantity, price) values ('$product_id', '$order_id', '$name', '$quantity', '$price')";
         return mysqli_query($conn, $insert);
     }
 
@@ -66,5 +66,28 @@ class Data
         global $conn;
         $select="select* from orders where user_id='$user_id'";
         return mysqli_query ($conn,$select);
+    }
+
+    public function checkExitProduct($product_id) {
+        global $conn;
+        $sql = "SELECT
+            p.id AS product_id,
+            p.name AS product_name,
+            p.total_product - COALESCE(SUM(od.quantity), 0) AS remaining_stock
+            FROM products p
+            LEFT JOIN order_details od ON p.id = od.product_id
+            LEFT JOIN orders o ON od.order_id = o.id
+            WHERE o.status = 0
+            AND p.id = $product_id
+            GROUP BY p.id, p.name, p.total_product ";
+        $data = mysqli_query($conn, $sql);
+    
+        if ($data->num_rows > 0) {
+            $product = $data->fetch_assoc();
+            $remaining_stock = $product['remaining_stock'];
+            return $remaining_stock;
+        } else {
+            return 0;
+        }
     }
 }
