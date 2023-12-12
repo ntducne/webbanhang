@@ -44,7 +44,7 @@ class Data
     public function insert_order_detail($product_id, $order_id, $name, $quantity, $price)
     {
         global $conn;
-        $insert = "insert into order_details(order_id, name, quantity, price) values ('$product_id', '$order_id', '$name', '$quantity', '$price')";
+        $insert = "insert into order_details(product_id, order_id, name, quantity, price) values ('$product_id', '$order_id', '$name', '$quantity', '$price')";
         return mysqli_query($conn, $insert);
     }
 
@@ -92,5 +92,11 @@ class Data
             $remaining_stock = $product['total_product'];
             return $remaining_stock;
         }
+    }
+
+    public function deleteOrder($order_code) {
+        global $conn;
+        $sql = "DELETE FROM orders WHERE order_code = '$order_code'";
+        return mysqli_query($conn, $sql);
     }
 }

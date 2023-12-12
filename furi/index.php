@@ -193,8 +193,13 @@
                 if(isset($_POST['action']) && $_POST['action'] == 'add'){
                     $id = $_POST['id'];
                     if($data->checkExitProduct($id) == 0){
-                        echo '<script>alert("Product is temporarily out of stock !")</script>';
-                        echo '<script>window.location.href="index.php"</script>';
+                        if($data->checkExitProduct($id) < $_POST['quantity']){
+                            echo '<script>alert("Product is temporarily out of stock !")</script>';
+                            echo '<script>window.location.href="index.php"</script>';
+                        }else {
+                            echo '<script>alert("Product is temporarily out of stock !")</script>';
+                            echo '<script>window.location.href="index.php"</script>';
+                        }
                     }
                     else {
                         $name = $_POST['name'];

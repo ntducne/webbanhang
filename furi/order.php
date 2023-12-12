@@ -340,10 +340,11 @@
                 if(!isset($_SESSION['cart'])){
                     $data = new Data();
                     if($data->checkExitProduct($product['id_prd']) == 0){
-                        echo '<script>alert("Product is temporarily out of stock !")</script>';
-                        echo '<script>window.location.href="shop.php"</script>';
-
-                        // header('Location: shop.php');
+                        if($data->checkExitProduct($product['id_prd']) < $product['quantity_prd']){
+                            $data->deleteOrder($order_code);
+                            echo '<script>alert("Product is temporarily out of stock !")</script>';
+                            echo '<script>window.location.href="shop.php"</script>';
+                        }
                     }
                     else {
                         $order->insert_order_detail($product['id_prd'], $orderID['id'], $product['name_prd'], $product['quantity_prd'], $product['price_prd']);
@@ -357,7 +358,9 @@
                         $product_price = $value['price_prd'];
                         $product_quantity = $value['quantity_prd'];
                         $data = new Data();
-                        if($data->checkExitProduct($product) >= 1){
+                        if($data->checkExitProduct($product) >= 1
+                            && $data->checkExitProduct($product) >= $product_quantity
+                        ){
                             $order_detail = $order->insert_order_detail($product, $order_id, $product_name, $product_quantity, $product_price);
                         }
                     }
