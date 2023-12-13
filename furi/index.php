@@ -189,25 +189,24 @@
                 include 'config/cart.php';
                 $cart = new Cart();
                 $data = new Data();
-
                 if(isset($_POST['action']) && $_POST['action'] == 'add'){
                     $id = $_POST['id'];
                     if($data->checkExitProduct($id) == 0){
+                        echo '<script>alert("Product is temporarily out of stock !")</script>';
+                        echo '<script>window.location.href="index.php"</script>';
+                    }
+                    else {
                         if($data->checkExitProduct($id) < $_POST['quantity']){
                             echo '<script>alert("Product is temporarily out of stock !")</script>';
                             echo '<script>window.location.href="index.php"</script>';
                         }else {
-                            echo '<script>alert("Product is temporarily out of stock !")</script>';
+                            $name = $_POST['name'];
+                            $price = $_POST['price'];
+                            $image = $_POST['image'];
+                            $quantity = $_POST['quantity'];
+                            $cart->add($id, $name, $price, $image, $quantity);
                             echo '<script>window.location.href="index.php"</script>';
                         }
-                    }
-                    else {
-                        $name = $_POST['name'];
-                        $price = $_POST['price'];
-                        $image = $_POST['image'];
-                        $quantity = $_POST['quantity'];
-                        $cart->add($id, $name, $price, $image, $quantity);
-                        echo '<script>window.location.href="index.php"</script>';
                     }
                 }
                 ?>

@@ -340,11 +340,9 @@
                 if(!isset($_SESSION['cart'])){
                     $data = new Data();
                     if($data->checkExitProduct($product['id_prd']) == 0){
-                        if($data->checkExitProduct($product['id_prd']) < $product['quantity_prd']){
-                            $data->deleteOrder($order_code);
-                            echo '<script>alert("Product is temporarily out of stock !")</script>';
-                            echo '<script>window.location.href="shop.php"</script>';
-                        }
+                        $data->deleteOrder($order_code);
+                        echo '<script>alert("Product is temporarily out of stock !")</script>';
+                        echo '<script>window.location.href="shop.php"</script>';
                     }
                     else {
                         $order->insert_order_detail($product['id_prd'], $orderID['id'], $product['name_prd'], $product['quantity_prd'], $product['price_prd']);
@@ -362,12 +360,17 @@
                             && $data->checkExitProduct($product) >= $product_quantity
                         ){
                             $order_detail = $order->insert_order_detail($product, $order_id, $product_name, $product_quantity, $product_price);
+                            unset($_SESSION['cart']);
+                            echo "<script>alert('Order success')</script>";
+                            echo '<script>window.location.href="thankyou.php?order_code=' . $order_code . '";</script>';
+                        }
+                        else {
+                            $data->deleteOrder($order_code);
+                            echo '<script>alert("Product is temporarily out of stock !")</script>';
+                            echo '<script>window.location.href="shop.php"</script>';
                         }
                     }
-                    unset($_SESSION['cart']);
                 }
-                echo "<script>alert('Order success')</script>";
-                echo '<script>window.location.href="thankyou.php?order_code=' . $order_code . '";</script>';
             }
         ?>
     </div>

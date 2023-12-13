@@ -181,22 +181,21 @@
                     $id = $_POST['id'];
                     $itemData = new Data();
                     if($itemData->checkExitProduct($id) == 0){
+                        echo '<script>alert("Product out of stock")</script>';
+                        echo '<script>window.location.href="index.php"</script>';   
+                    } else {
                         if($itemData->checkExitProduct($id) < $_POST['quantity']){
                             echo '<script>alert("Product out of stock")</script>';
                             echo '<script>window.location.href="index.php"</script>';   
+                        }else {
+                            $name = $_POST['name'];
+                            $price = $_POST['price'];
+                            $image = $_POST['image'];
+                            $quantity = $_POST['quantity'];
+                            $cart->add($id, $name, $price, $image, $quantity);
+                            echo '<script>alert("Product added to cart ")</script>';
+                            echo '<script>window.location.href="index.php"</script>';
                         }
-                        else {
-                            echo '<script>alert("Product out of stock")</script>';
-                            echo '<script>window.location.href="index.php"</script>';   
-                        }
-                    } else {
-                        $name = $_POST['name'];
-                        $price = $_POST['price'];
-                        $image = $_POST['image'];
-                        $quantity = $_POST['quantity'];
-                        $cart->add($id, $name, $price, $image, $quantity);
-                        echo '<script>alert("Product added to cart ")</script>';
-                        echo '<script>window.location.href="index.php"</script>';
                     }
                 }
             ?>
