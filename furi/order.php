@@ -1,6 +1,5 @@
 <?php
     session_start();
-    ob_start();
 ?>
 <!-- /*
 * Bootstrap 5
@@ -346,6 +345,8 @@
                     }
                     else {
                         $order->insert_order_detail($product['id_prd'], $orderID['id'], $product['name_prd'], $product['quantity_prd'], $product['price_prd']);
+                        echo "<script>alert('Order success')</script>";
+                        echo '<script>window.location.href="thankyou.php?order_code=' . $order_code . '";</script>';
                     }
                 }
                 else {
